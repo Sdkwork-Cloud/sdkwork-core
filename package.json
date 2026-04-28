@@ -1,0 +1,18 @@
+{
+  "name": "sdkwork-core-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.30.3",
+  "pnpm": {
+    "overrides": {
+      "@sdkwork/app-sdk": "workspace:*",
+      "@sdkwork/sdk-common": "workspace:*",
+      "@sdkwork/craw-chat-backend-sdk": "workspace:*",
+      "@sdkwork/craw-chat-sdk": "workspace:*"
+    }
+  },
+  "scripts": {
+    "build": "pnpm -r --filter @sdkwork/core-pc-react build",
+    "test": "pnpm -r --filter @sdkwork/core-pc-react test",
+    "typecheck": "pnpm -r --filter @sdkwork/core-pc-react typecheck"
+  }
+}
