@@ -1,6 +1,6 @@
 {
   "name": "@sdkwork/core-pc-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unified SDKWork core runtime for Tauri React desktop apps",
   "type": "module",
   "main": "./src/index.ts",
@@ -62,8 +62,8 @@
   },
   "dependencies": {
     "@sdkwork/app-sdk": "^1.0.34",
-    "@sdkwork/im-sdk": "^0.1.0",
-    "@sdkwork/rtc-sdk": "^0.1.0"
+    "@sdkwork/im-sdk": "^0.1.1",
+    "@sdkwork/rtc-sdk": "^0.1.1"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.2",
