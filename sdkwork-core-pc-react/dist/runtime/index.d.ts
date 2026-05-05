@@ -15,5 +15,6 @@ export declare const SDKWORK_PC_REACT_LEGACY_STORAGE_KEYS: {
     readonly accessToken: "sdkwork_access_token";
     readonly refreshToken: "sdkwork_refresh_token";
 };
+export { createPcReactLocaleFormatting, readPcReactShellBridgeValue, resolvePcReactLocaleDirection, } from './shell-bridge';
 export { getImConnectionState, getPcReactEnv, getPcReactRuntimeVersion, SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY, SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY, SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY, subscribeImConnectionState, subscribePcReactRuntime };
 //# sourceMappingURL=index.d.ts.map

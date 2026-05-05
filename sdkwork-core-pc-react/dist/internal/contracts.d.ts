@@ -1,8 +1,12 @@
 import { SdkworkAppConfig } from '@sdkwork/app-sdk';
-import { SdkworkBackendConfig } from '@sdkwork/im-backend-sdk';
+import { ImTokenProvider } from '@sdkwork/im-sdk';
 export type PcReactRuntimeEnv = "development" | "test" | "staging" | "production";
 export type PcReactOwnerMode = "root" | "tenant" | "organization";
 export type PcReactAuthMode = "apikey" | "dual-token";
+export type PcReactThemeSelection = "dark" | "light" | "system";
+export type PcReactThemeColor = "green-tech" | "lobster" | "rose" | "tech-blue" | "violet" | "zinc";
+export type PcReactTextDirection = "ltr" | "rtl";
+export type PcReactLocalePreference = string | "system";
 export interface PcReactEnvSource {
     [key: string]: string | boolean | undefined;
 }
@@ -76,6 +80,30 @@ export interface PcReactLegacyStorageKeys {
     runtimeSession?: string[];
     imSession?: string[];
 }
+export interface PcReactShellPreferences {
+    localePreference: PcReactLocalePreference;
+    themeSelection: PcReactThemeSelection;
+    themeColor: PcReactThemeColor;
+    locale: string;
+}
+export interface PcReactResolvedShellPreferences extends PcReactShellPreferences {
+    colorMode: "dark" | "light";
+}
+export interface PcReactLocaleFormatting {
+    formatDate: (value: Date | number | string | null | undefined, options?: Intl.DateTimeFormatOptions) => string;
+    formatDateTime: (value: Date | number | string | null | undefined, options?: Intl.DateTimeFormatOptions) => string;
+    locale: string;
+}
+export interface PcReactShellBridgeActions {
+    patchPreferences: (patch: Partial<PcReactShellPreferences>) => PcReactResolvedShellPreferences;
+    setLocalePreference: (next: PcReactLocalePreference) => PcReactResolvedShellPreferences;
+    setThemeColor: (next: PcReactThemeColor) => PcReactResolvedShellPreferences;
+    setThemeSelection: (next: PcReactThemeSelection) => PcReactResolvedShellPreferences;
+}
+export interface PcReactPreferenceOptions {
+    defaults?: Partial<PcReactShellPreferences>;
+    storageKey?: string;
+}
 export interface PcImSessionIdentity {
     userId: string;
     username: string;
@@ -90,6 +118,15 @@ export interface PcReactRuntimeSession {
     refreshToken?: string;
     im?: PcImSessionIdentity;
 }
+export interface PcReactShellBridgeValue {
+    actions: PcReactShellBridgeActions;
+    dir: PcReactTextDirection;
+    env: PcReactEnvConfig;
+    formatters: PcReactLocaleFormatting;
+    locale: string;
+    preferences: PcReactResolvedShellPreferences;
+    session: PcReactRuntimeSession;
+}
 export type PcReactRuntimeClientTarget = "app" | "im";
 export interface PcReactHeadersResolverContext {
     env: PcReactEnvConfig;
@@ -102,16 +139,31 @@ export interface ConfigurePcReactRuntimeOptions {
     envGlobalKeys?: string[];
     storage?: PcReactStorageAdapter;
     legacyStorageKeys?: PcReactLegacyStorageKeys;
+    preferences?: PcReactPreferenceOptions;
     appClientCompatAliases?: Record<string, string>;
     headersResolver?: PcReactHeadersResolver;
     appConfigOverrides?: Partial<SdkworkAppConfig>;
-    imConfigOverrides?: Partial<SdkworkBackendConfig>;
+    imConfigOverrides?: Partial<PcReactImTransportConfig>;
 }
 export interface PcReactAppClientConfig extends SdkworkAppConfig {
     env: PcReactRuntimeEnv;
     ownerMode: PcReactOwnerMode;
 }
-export interface PcReactImClientConfig extends SdkworkBackendConfig {
+export interface PcReactImTransportConfig {
+    baseUrl: string;
+    apiKey?: string;
+    authToken?: string;
+    accessToken?: string;
+    tenantId?: string;
+    organizationId?: string;
+    platform?: string;
+    tokenManager?: ImTokenProvider;
+    timeout?: number;
+    authMode?: PcReactAuthMode;
+    headers?: Record<string, string>;
+    websocketBaseUrl?: string;
+}
+export interface PcReactImClientConfig extends PcReactImTransportConfig {
     env: PcReactRuntimeEnv;
     ownerMode: PcReactOwnerMode;
 }

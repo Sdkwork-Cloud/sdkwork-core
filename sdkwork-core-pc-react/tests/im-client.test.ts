@@ -1,33 +1,28 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => {
-  const backendClient = {
-    setAuthToken: vi.fn(),
-    setAccessToken: vi.fn()
-  };
-
-  const sessionSetAccessTokenMock = vi.fn();
-  const sessionSetAuthTokenMock = vi.fn();
-  const connectRealtimeMock = vi.fn(async (session?: Record<string, unknown>) => ({
-    uid: "user-1",
-    token: (session?.token as string | undefined) || "wk-token",
-    wsUrl: (session?.wsUrl as string | undefined) || "wss://im.example.com/ws"
+  const authUseTokenMock = vi.fn();
+  const authClearTokenMock = vi.fn();
+  const disconnectMock = vi.fn();
+  const connectMock = vi.fn(async (options?: Record<string, unknown>) => ({
+    lifecycle: {
+      onStateChange: vi.fn((listener: (state: { status: string }) => void) => {
+        listener({ status: "connected" });
+        return () => undefined;
+      })
+    },
+    disconnect: disconnectMock,
+    options
   }));
-  const disconnectRealtimeMock = vi.fn(async () => undefined);
   const sdkInstances: Array<Record<string, unknown>> = [];
-  const adapterInstances: Array<Record<string, unknown>> = [];
 
-  const MockOpenChatImSdk = class {
+  const MockImSdkClient = class {
     public readonly options: Record<string, unknown>;
-    public readonly session = {
-      setAccessToken: sessionSetAccessTokenMock,
-      setAuthToken: sessionSetAuthTokenMock,
-      connectRealtime: connectRealtimeMock,
-      disconnectRealtime: disconnectRealtimeMock
+    public readonly auth = {
+      useToken: authUseTokenMock,
+      clearToken: authClearTokenMock
     };
-    public readonly realtime = {
-      onConnectionStateChange: vi.fn(() => () => undefined)
-    };
+    public readonly connect = connectMock;
 
     constructor(options: Record<string, unknown>) {
       this.options = options;
@@ -36,35 +31,17 @@ const mocks = vi.hoisted(() => {
   };
 
   return {
-    adapterConstructorMock: class {
-      constructor() {
-        const instance = { kind: "adapter" };
-        adapterInstances.push(instance);
-        return instance;
-      }
-    },
-    adapterInstances,
-    backendClient,
-    connectRealtimeMock,
-    createClientMock: vi.fn(() => backendClient),
-    disconnectRealtimeMock,
-    MockOpenChatImSdk,
-    sessionSetAccessTokenMock,
-    sessionSetAuthTokenMock,
+    authClearTokenMock,
+    authUseTokenMock,
+    connectMock,
+    disconnectMock,
+    MockImSdkClient,
     sdkInstances
   };
 });
 
-vi.mock("@sdkwork/im-backend-sdk", () => ({
-  createClient: mocks.createClientMock
-}));
-
-vi.mock("@openchat/sdkwork-im-sdk", () => ({
-  OpenChatImSdk: mocks.MockOpenChatImSdk
-}));
-
-vi.mock("@openchat/sdkwork-im-wukongim-adapter", () => ({
-  OpenChatWukongimAdapter: mocks.adapterConstructorMock
+vi.mock("@sdkwork/im-sdk", () => ({
+  ImSdkClient: mocks.MockImSdkClient
 }));
 
 const ORIGINAL_ENV = {
@@ -77,14 +54,10 @@ describe("im client runtime", () => {
     process.env.VITE_API_BASE_URL = "https://api.example.com/";
     process.env.VITE_ACCESS_TOKEN = "runtime-access-token";
 
-    mocks.createClientMock.mockClear();
-    mocks.backendClient.setAuthToken.mockClear();
-    mocks.backendClient.setAccessToken.mockClear();
-    mocks.sessionSetAccessTokenMock.mockClear();
-    mocks.sessionSetAuthTokenMock.mockClear();
-    mocks.connectRealtimeMock.mockClear();
-    mocks.disconnectRealtimeMock.mockClear();
-    mocks.adapterInstances.length = 0;
+    mocks.authClearTokenMock.mockClear();
+    mocks.authUseTokenMock.mockClear();
+    mocks.connectMock.mockClear();
+    mocks.disconnectMock.mockClear();
     mocks.sdkInstances.length = 0;
 
     const { resetPcReactRuntime } = await import("../src/runtime");
@@ -96,7 +69,7 @@ describe("im client runtime", () => {
     process.env.VITE_ACCESS_TOKEN = ORIGINAL_ENV.VITE_ACCESS_TOKEN;
   });
 
-  it("syncs separated backend tokens and login session into the IM runtime", async () => {
+  it("syncs separated transport tokens and login session into the IM runtime", async () => {
     const { syncImClientSession, getImSessionIdentity, readPcReactRuntimeSession } = await import("../src");
 
     await syncImClientSession(
@@ -117,21 +90,22 @@ describe("im client runtime", () => {
       }
     );
 
-    expect(mocks.createClientMock).toHaveBeenCalledWith(
+    expect(mocks.sdkInstances[0].options).toEqual(
       expect.objectContaining({
+        apiBaseUrl: "https://api.example.com",
         baseUrl: "https://api.example.com",
-        accessToken: "runtime-access-token"
+        websocketBaseUrl: "wss://api.example.com/ws"
       })
     );
-    expect(mocks.backendClient.setAuthToken).toHaveBeenCalledWith("auth-token");
-    expect(mocks.backendClient.setAccessToken).toHaveBeenLastCalledWith("tenant-access-token");
-    expect(mocks.sessionSetAuthTokenMock).toHaveBeenCalledWith("auth-token");
-    expect(mocks.sessionSetAccessTokenMock).not.toHaveBeenCalled();
-    expect(mocks.connectRealtimeMock).toHaveBeenCalledWith({
-      uid: "user-1",
-      token: "wk-token",
-      wsUrl: "wss://im.example.com/ws",
-      deviceId: "device-1"
+    expect((mocks.sdkInstances[0].options as { tokenProvider: { getAccessToken: () => string; getAuthToken: () => string } }).tokenProvider.getAccessToken()).toBe("tenant-access-token");
+    expect((mocks.sdkInstances[0].options as { tokenProvider: { getAccessToken: () => string; getAuthToken: () => string } }).tokenProvider.getAuthToken()).toBe("auth-token");
+    expect(mocks.authUseTokenMock).toHaveBeenCalledWith("auth-token");
+    expect(mocks.connectMock).toHaveBeenCalledWith({
+      deviceId: "device-1",
+      url: "wss://im.example.com/ws",
+      headers: {
+        Authorization: "Bearer wk-token"
+      }
     });
     expect(getImSessionIdentity()).toEqual({
       userId: "user-1",
@@ -173,7 +147,8 @@ describe("im client runtime", () => {
       baseUrl: "https://im-app.example.com",
       timeout: 18_000,
       accessToken: "im-access-token",
-      platform: "desktop-chat"
+      platform: "desktop-chat",
+      websocketBaseUrl: "wss://im-app.example.com/ws"
     });
   });
 
@@ -195,9 +170,9 @@ describe("im client runtime", () => {
 
     await clearPcReactRuntimeSession();
 
-    expect(mocks.backendClient.setAuthToken).toHaveBeenLastCalledWith("");
-    expect(mocks.backendClient.setAccessToken).toHaveBeenLastCalledWith("runtime-access-token");
-    expect(mocks.sessionSetAuthTokenMock).toHaveBeenLastCalledWith("");
+    expect((mocks.sdkInstances[0].options as { tokenProvider: { getAccessToken: () => string | undefined; getAuthToken: () => string | undefined } }).tokenProvider.getAccessToken()).toBe("runtime-access-token");
+    expect((mocks.sdkInstances[0].options as { tokenProvider: { getAccessToken: () => string | undefined; getAuthToken: () => string | undefined } }).tokenProvider.getAuthToken()).toBeUndefined();
+    expect(mocks.authClearTokenMock).toHaveBeenCalled();
   });
 
   it("requires a user id before syncing an IM session", async () => {
@@ -218,7 +193,7 @@ describe("im client runtime", () => {
     ).rejects.toThrow("IM user id is required");
   });
 
-  it("merges runtime-resolved headers into the IM backend config", async () => {
+  it("merges runtime-resolved headers into the IM transport config", async () => {
     const { configurePcReactRuntime, createImClientConfig } = await import("../src");
 
     configurePcReactRuntime({

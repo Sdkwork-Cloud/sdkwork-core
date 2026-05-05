@@ -1,6 +1,5 @@
 import { SdkworkAppConfig } from '@sdkwork/app-sdk';
-import { SdkworkBackendConfig } from '@sdkwork/im-backend-sdk';
-import { ConfigurePcReactRuntimeOptions, PcImSessionIdentity, PcReactEnvConfig, PcReactRuntimeClientTarget, PcReactRuntimeSession, PcReactStorageAdapter } from './contracts';
+import { ConfigurePcReactRuntimeOptions, PcImSessionIdentity, PcReactEnvConfig, PcReactImTransportConfig, PcReactRuntimeClientTarget, PcReactRuntimeSession, PcReactStorageAdapter } from './contracts';
 export declare const SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY = "sdkwork_token";
 export declare const SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY = "sdkwork_access_token";
 export declare const SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY = "sdkwork_refresh_token";
@@ -13,6 +12,11 @@ export declare function subscribeImConnectionState(listener: (state: string) => 
 export declare function getImConnectionState(): string;
 export declare function setImConnectionState(state: string): void;
 export declare function bindImConnectionState(runtime: {
+    lifecycle?: {
+        onStateChange?: (listener: (state: {
+            status?: string;
+        } | string) => void) => () => void;
+    };
     realtime?: {
         onConnectionStateChange?: (listener: (state: string) => void) => () => void;
     };
@@ -27,9 +31,9 @@ export declare function getImSessionIdentity(): PcImSessionIdentity | null;
 export declare function setAppClientCache(client: unknown, config: SdkworkAppConfig): void;
 export declare function getAppClientCache<T>(): T | null;
 export declare function getAppClientConfigCache<T extends SdkworkAppConfig>(): T | null;
-export declare function setImBackendClientCache(client: unknown, config: SdkworkBackendConfig): void;
-export declare function getImBackendClientCache<T>(): T | null;
-export declare function getImBackendConfigCache<T extends SdkworkBackendConfig>(): T | null;
+export declare function setImTransportClientCache(client: unknown, config: PcReactImTransportConfig): void;
+export declare function getImTransportClientCache<T>(): T | null;
+export declare function getImTransportConfigCache<T extends PcReactImTransportConfig>(): T | null;
 export declare function setImClientCache(client: unknown): void;
 export declare function getImClientCache<T>(): T | null;
 export declare function resetRuntimeCaches(): void;

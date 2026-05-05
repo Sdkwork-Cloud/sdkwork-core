@@ -8,17 +8,17 @@ export default defineConfig({
         __dirname,
         "../../../spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript/src/index.ts"
       ),
-      "@sdkwork/im-backend-sdk": path.resolve(
+      "@sdkwork/sdk-common": path.resolve(
         __dirname,
-        "../../openchat/sdkwork-im-sdk/sdkwork-im-sdk-typescript/generated/server-openapi/src/index.ts"
+        "../../../sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts"
       ),
-      "@openchat/sdkwork-im-sdk": path.resolve(
+      "@sdkwork/im-sdk": path.resolve(
         __dirname,
-        "../../openchat/sdkwork-im-sdk/sdkwork-im-sdk-typescript/composed/src/index.ts"
+        "../../craw-chat/sdks/sdkwork-im-sdk/sdkwork-im-sdk-typescript/src/index.ts"
       ),
-      "@openchat/sdkwork-im-wukongim-adapter": path.resolve(
+      "@sdkwork/rtc-sdk": path.resolve(
         __dirname,
-        "../../openchat/sdkwork-im-sdk/sdkwork-im-sdk-typescript/adapter-wukongim/src/index.ts"
+        "../../craw-chat/sdks/sdkwork-rtc-sdk/sdkwork-rtc-sdk-typescript/src/index.ts"
       )
     }
   },

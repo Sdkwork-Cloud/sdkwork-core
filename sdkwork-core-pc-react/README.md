@@ -64,7 +64,8 @@ import {
   useImClient,
   usePcReactResolvedShellPreferences,
 } from "@sdkwork/core-pc-react";
-import { getAppLanguage } from "@sdkwork/openchat-pc-i18n";
+
+const getAppLanguage = () => navigator.language || "en-US";
 
 configurePcReactRuntime({
   envSource: import.meta.env,

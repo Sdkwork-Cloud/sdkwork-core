@@ -6,26 +6,17 @@ const mocks = vi.hoisted(() => {
     setAuthToken: vi.fn(),
     setAccessToken: vi.fn()
   };
-  const backendClient = {
-    setAuthToken: vi.fn(),
-    setAccessToken: vi.fn()
-  };
   const imClient = {
-    session: {
-      setAuthToken: vi.fn(),
-      setAccessToken: vi.fn()
+    auth: {
+      clearToken: vi.fn(),
+      useToken: vi.fn()
     },
-    realtime: {
-      onConnectionStateChange: vi.fn(() => () => undefined)
-    }
+    connect: vi.fn()
   };
 
   return {
     appClient,
-    backendClient,
     createAppClientMock: vi.fn(() => appClient),
-    createImBackendClientMock: vi.fn(() => backendClient),
-    imAdapterConstructor: class {},
     imClient,
     imSdkConstructor: vi.fn(() => imClient)
   };
@@ -35,20 +26,13 @@ vi.mock("@sdkwork/app-sdk", () => ({
   createClient: mocks.createAppClientMock
 }));
 
-vi.mock("@sdkwork/im-backend-sdk", () => ({
-  createClient: mocks.createImBackendClientMock
-}));
-
-vi.mock("@openchat/sdkwork-im-sdk", () => ({
-  OpenChatImSdk: class {
-    constructor() {
+vi.mock("@sdkwork/im-sdk", () => ({
+  ImSdkClient: class {
+    constructor(...args: unknown[]) {
+      mocks.imSdkConstructor(...args);
       return mocks.imClient;
     }
   }
-}));
-
-vi.mock("@openchat/sdkwork-im-wukongim-adapter", () => ({
-  OpenChatWukongimAdapter: mocks.imAdapterConstructor
 }));
 
 describe("core hooks", () => {

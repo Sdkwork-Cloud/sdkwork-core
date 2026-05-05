@@ -1,5 +1,5 @@
 import type { SdkworkAppConfig } from "@sdkwork/app-sdk";
-import type { SdkworkBackendConfig } from "@sdkwork/im-backend-sdk";
+import type { ImTokenProvider } from "@sdkwork/im-sdk";
 
 export type PcReactRuntimeEnv = "development" | "test" | "staging" | "production";
 
@@ -175,7 +175,7 @@ export interface ConfigurePcReactRuntimeOptions {
   appClientCompatAliases?: Record<string, string>;
   headersResolver?: PcReactHeadersResolver;
   appConfigOverrides?: Partial<SdkworkAppConfig>;
-  imConfigOverrides?: Partial<SdkworkBackendConfig>;
+  imConfigOverrides?: Partial<PcReactImTransportConfig>;
 }
 
 export interface PcReactAppClientConfig extends SdkworkAppConfig {
@@ -183,7 +183,22 @@ export interface PcReactAppClientConfig extends SdkworkAppConfig {
   ownerMode: PcReactOwnerMode;
 }
 
-export interface PcReactImClientConfig extends SdkworkBackendConfig {
+export interface PcReactImTransportConfig {
+  baseUrl: string;
+  apiKey?: string;
+  authToken?: string;
+  accessToken?: string;
+  tenantId?: string;
+  organizationId?: string;
+  platform?: string;
+  tokenManager?: ImTokenProvider;
+  timeout?: number;
+  authMode?: PcReactAuthMode;
+  headers?: Record<string, string>;
+  websocketBaseUrl?: string;
+}
+
+export interface PcReactImClientConfig extends PcReactImTransportConfig {
   env: PcReactRuntimeEnv;
   ownerMode: PcReactOwnerMode;
 }

@@ -15,9 +15,8 @@ export default defineConfig({
         "react",
         "react-dom",
         "@sdkwork/app-sdk",
-        "@sdkwork/im-backend-sdk",
-        "@openchat/sdkwork-im-sdk",
-        "@openchat/sdkwork-im-wukongim-adapter"
+        "@sdkwork/im-sdk",
+        "@sdkwork/rtc-sdk"
       ]
     },
     sourcemap: true

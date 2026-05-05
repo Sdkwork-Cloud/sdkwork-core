@@ -1,10 +1,10 @@
 import type { SdkworkAppConfig } from "@sdkwork/app-sdk";
-import type { SdkworkBackendConfig } from "@sdkwork/im-backend-sdk";
 import type {
   ConfigurePcReactRuntimeOptions,
   PcImSessionIdentity,
   PcReactEnvConfig,
   PcReactLegacyStorageKeys,
+  PcReactImTransportConfig,
   PcReactPreferenceOptions,
   PcReactRuntimeClientTarget,
   PcReactRuntimeSession,
@@ -40,8 +40,8 @@ let runtimeOptions: ConfigurePcReactRuntimeOptions = {};
 let cachedEnv: PcReactEnvConfig | null = null;
 let appClientCache: unknown = null;
 let appClientConfigCache: SdkworkAppConfig | null = null;
-let imBackendClientCache: unknown = null;
-let imBackendConfigCache: SdkworkBackendConfig | null = null;
+let imTransportClientCache: unknown = null;
+let imTransportConfigCache: PcReactImTransportConfig | null = null;
 let imClientCache: unknown = null;
 let imSessionIdentityCache: PcImSessionIdentity | null = null;
 let runtimeVersion = 0;
@@ -283,14 +283,22 @@ export function setImConnectionState(state: string): void {
 }
 
 export function bindImConnectionState(runtime: {
+  lifecycle?: {
+    onStateChange?: (listener: (state: { status?: string } | string) => void) => () => void;
+  };
   realtime?: {
     onConnectionStateChange?: (listener: (state: string) => void) => () => void;
   };
 }): void {
   imConnectionUnsubscribe?.();
-  imConnectionUnsubscribe = runtime.realtime?.onConnectionStateChange?.((state) => {
-    emitImConnectionState(state);
-  }) ?? null;
+  imConnectionUnsubscribe =
+    runtime.lifecycle?.onStateChange?.((state) => {
+      emitImConnectionState(typeof state === "string" ? state : state.status || "idle");
+    }) ??
+    runtime.realtime?.onConnectionStateChange?.((state) => {
+      emitImConnectionState(state);
+    }) ??
+    null;
 }
 
 export function getPcReactEnv(): PcReactEnvConfig {
@@ -341,7 +349,7 @@ export function readPcReactRuntimeSession(): PcReactRuntimeSession {
   );
   const configuredAccessToken = normalizeBearerToken(
     (appClientConfigCache?.accessToken as string | undefined) ||
-      (imBackendConfigCache?.accessToken as string | undefined)
+      (imTransportConfigCache?.accessToken as string | undefined)
   );
   const refreshToken = (
     readStorageValue(REFRESH_TOKEN_STORAGE_KEY) ||
@@ -449,17 +457,17 @@ export function getAppClientConfigCache<T extends SdkworkAppConfig>(): T | null 
   return (appClientConfigCache as T | null) ?? null;
 }
 
-export function setImBackendClientCache(client: unknown, config: SdkworkBackendConfig): void {
-  imBackendClientCache = client;
-  imBackendConfigCache = config;
+export function setImTransportClientCache(client: unknown, config: PcReactImTransportConfig): void {
+  imTransportClientCache = client;
+  imTransportConfigCache = config;
 }
 
-export function getImBackendClientCache<T>(): T | null {
-  return (imBackendClientCache as T | null) ?? null;
+export function getImTransportClientCache<T>(): T | null {
+  return (imTransportClientCache as T | null) ?? null;
 }
 
-export function getImBackendConfigCache<T extends SdkworkBackendConfig>(): T | null {
-  return (imBackendConfigCache as T | null) ?? null;
+export function getImTransportConfigCache<T extends PcReactImTransportConfig>(): T | null {
+  return (imTransportConfigCache as T | null) ?? null;
 }
 
 export function setImClientCache(client: unknown): void {
@@ -474,8 +482,8 @@ export function resetRuntimeCaches(): void {
   cachedEnv = null;
   appClientCache = null;
   appClientConfigCache = null;
-  imBackendClientCache = null;
-  imBackendConfigCache = null;
+  imTransportClientCache = null;
+  imTransportConfigCache = null;
   imClientCache = null;
   imSessionIdentityCache = null;
   imConnectionUnsubscribe?.();

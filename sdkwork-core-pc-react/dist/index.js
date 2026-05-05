@@ -1,37 +1,35 @@
 import { createClient as e } from "@sdkwork/app-sdk";
-import { createClient as t } from "@sdkwork/im-backend-sdk";
-import { OpenChatImSdk as n } from "@openchat/sdkwork-im-sdk";
-import { OpenChatWukongimAdapter as r } from "@openchat/sdkwork-im-wukongim-adapter";
-import { useSyncExternalStore as i } from "react";
+import { ImSdkClient as t } from "@sdkwork/im-sdk";
+import { useMemo as n, useSyncExternalStore as r } from "react";
 //#region src/internal/helpers.ts
-var a = 3e4;
-function o(...e) {
+var i = 3e4;
+function a(...e) {
 	for (let t of e) {
 		let e = typeof t == "string" ? t.trim() : "";
 		if (e) return e;
 	}
 }
-function s(e) {
+function o(e) {
 	return (e || "").trim();
 }
-function c(e) {
-	let t = s(e);
+function s(e) {
+	let t = o(e);
 	return t ? t.replace(/^Bearer\s+/i, "").trim() : "";
 }
-function l(e) {
-	return s(e).replace(/\/+$/g, "");
+function c(e) {
+	return o(e).replace(/\/+$/g, "");
 }
-function ee(e, t = a) {
+function l(e, t = i) {
 	let n = Number(e);
 	return !Number.isFinite(n) || n <= 0 ? t : n;
 }
-function te(e) {
+function ee(e) {
 	let t = Number(e);
 	return !Number.isFinite(t) || t <= 0 ? null : t;
 }
 function u(e, t) {
 	if (typeof e == "boolean") return e;
-	let n = s(typeof e == "string" ? e : String(t)).toLowerCase();
+	let n = o(typeof e == "string" ? e : String(t)).toLowerCase();
 	return n === "true" || n === "1";
 }
 function d(e) {
@@ -48,7 +46,7 @@ function f(e) {
 function p(e) {
 	return JSON.stringify(e);
 }
-function ne(e) {
+function te(e) {
 	switch (e) {
 		case "production": return "https://api.sdkwork.com";
 		case "test": return "https://api-test.sdkwork.com";
@@ -56,8 +54,8 @@ function ne(e) {
 		default: return "https://api-dev.sdkwork.com";
 	}
 }
-function re(e) {
-	let t = l(e);
+function ne(e) {
+	let t = c(e);
 	if (!t) return "";
 	try {
 		let e = new URL(t);
@@ -66,17 +64,17 @@ function re(e) {
 		return "";
 	}
 }
-function ie(...e) {
-	let t = o(...e)?.toLowerCase();
+function re(...e) {
+	let t = a(...e)?.toLowerCase();
 	return t === "production" || t === "prod" ? "production" : t === "test" ? "test" : t === "staging" || t === "stage" ? "staging" : "development";
 }
 function m(e, t, n, r) {
-	return r || (s(e) && !s(t) && !s(n) ? "apikey" : "dual-token");
+	return r || (o(e) && !o(t) && !o(n) ? "apikey" : "dual-token");
 }
 //#endregion
 //#region src/env/index.ts
 var h = /* @__PURE__ */ "VITE_APP_ENV.VITE_APP_OWNER_MODE.VITE_OWNER_MODE.VITE_API_BASE_URL.VITE_APP_BASE_URL.VITE_APP_ROOT_API_BASE_URL.VITE_APP_TENANT_API_BASE_URL.VITE_APP_ORGANIZATION_API_BASE_URL.VITE_ROOT_API_BASE_URL.VITE_APP_ROOT_API_BASE_URL.VITE_TENANT_API_BASE_URL.VITE_APP_TENANT_API_BASE_URL.VITE_ORGANIZATION_API_BASE_URL.VITE_APP_ORGANIZATION_API_BASE_URL.VITE_IM_WS_URL.VITE_APP_IM_WS_URL.VITE_ACCESS_TOKEN.VITE_APP_ACCESS_TOKEN.VITE_APP_ROOT_ACCESS_TOKEN.VITE_APP_TENANT_ACCESS_TOKEN.VITE_APP_ORGANIZATION_ACCESS_TOKEN.VITE_ROOT_ACCESS_TOKEN.VITE_APP_ROOT_ACCESS_TOKEN.VITE_TENANT_ACCESS_TOKEN.VITE_APP_TENANT_ACCESS_TOKEN.VITE_ORGANIZATION_ACCESS_TOKEN.VITE_APP_ORGANIZATION_ACCESS_TOKEN.VITE_API_KEY.VITE_TIMEOUT.VITE_TENANT_ID.VITE_APP_TENANT_ID.VITE_ORGANIZATION_ID.VITE_APP_ORGANIZATION_ID.VITE_PLATFORM.VITE_APP_PLATFORM.VITE_APP_NAME.VITE_APP_VERSION.VITE_DISTRIBUTION_ID.VITE_APP_ID.VITE_RELEASE_CHANNEL.VITE_ENABLE_STARTUP_UPDATE_CHECK.VITE_DEBUG.VITE_LOG_LEVEL".split(".");
-function ae() {
+function ie() {
 	return {
 		BASE_URL: "/",
 		DEV: !1,
@@ -85,16 +83,16 @@ function ae() {
 		SSR: !1
 	};
 }
-function oe() {
+function ae() {
 	return globalThis.process?.env ?? {};
 }
-function se() {
+function oe() {
 	return {
-		...oe(),
-		...ae()
+		...ae(),
+		...ie()
 	};
 }
-function ce(e = []) {
+function g(e = []) {
 	let t = globalThis;
 	return e.reduce((e, n) => {
 		let r = t[n];
@@ -104,41 +102,41 @@ function ce(e = []) {
 		};
 	}, {});
 }
-function le() {
+function se() {
 	if (typeof window > "u") return !1;
 	let e = window;
 	return !!(e.__TAURI__ || e.__TAURI_IPC__ || e.__TAURI_INTERNALS__);
 }
+function ce(e, t) {
+	return t ? "desktop" : a(o(e.VITE_PLATFORM), o(e.VITE_APP_PLATFORM), o(e.SDKWORK_PLATFORM)) || "web";
+}
+function le(e) {
+	let t = a(o(e.VITE_APP_OWNER_MODE), o(e.VITE_OWNER_MODE), o(e.SDKWORK_OWNER_MODE))?.toLowerCase();
+	return t === "organization" || t === "org" ? "organization" : t === "tenant" ? "tenant" : t === "root" ? "root" : a(o(e.VITE_TENANT_ID), o(e.VITE_APP_TENANT_ID), o(e.SDKWORK_TENANT_ID), o(e.VITE_TENANT_ACCESS_TOKEN), o(e.VITE_APP_TENANT_ACCESS_TOKEN), o(e.VITE_TENANT_API_BASE_URL), o(e.VITE_APP_TENANT_API_BASE_URL)) ? "tenant" : a(o(e.VITE_ORGANIZATION_ID), o(e.VITE_APP_ORGANIZATION_ID), o(e.SDKWORK_ORGANIZATION_ID), o(e.VITE_ORGANIZATION_ACCESS_TOKEN), o(e.VITE_APP_ORGANIZATION_ACCESS_TOKEN), o(e.VITE_ORGANIZATION_API_BASE_URL), o(e.VITE_APP_ORGANIZATION_API_BASE_URL)) ? "organization" : "root";
+}
 function ue(e, t) {
-	return t ? "desktop" : o(s(e.VITE_PLATFORM), s(e.VITE_APP_PLATFORM), s(e.SDKWORK_PLATFORM)) || "web";
-}
-function de(e) {
-	let t = o(s(e.VITE_APP_OWNER_MODE), s(e.VITE_OWNER_MODE), s(e.SDKWORK_OWNER_MODE))?.toLowerCase();
-	return t === "organization" || t === "org" ? "organization" : t === "tenant" ? "tenant" : t === "root" ? "root" : o(s(e.VITE_TENANT_ID), s(e.VITE_APP_TENANT_ID), s(e.SDKWORK_TENANT_ID), s(e.VITE_TENANT_ACCESS_TOKEN), s(e.VITE_APP_TENANT_ACCESS_TOKEN), s(e.VITE_TENANT_API_BASE_URL), s(e.VITE_APP_TENANT_API_BASE_URL)) ? "tenant" : o(s(e.VITE_ORGANIZATION_ID), s(e.VITE_APP_ORGANIZATION_ID), s(e.SDKWORK_ORGANIZATION_ID), s(e.VITE_ORGANIZATION_ACCESS_TOKEN), s(e.VITE_APP_ORGANIZATION_ACCESS_TOKEN), s(e.VITE_ORGANIZATION_API_BASE_URL), s(e.VITE_APP_ORGANIZATION_API_BASE_URL)) ? "organization" : "root";
-}
-function fe(e, t) {
-	let n = l(o(s(e.VITE_API_BASE_URL), s(e.VITE_APP_API_BASE_URL), s(e.VITE_APP_BASE_URL), s(e.SDKWORK_API_BASE_URL), ne(t)));
+	let n = c(a(o(e.VITE_API_BASE_URL), o(e.VITE_APP_API_BASE_URL), o(e.VITE_APP_BASE_URL), o(e.SDKWORK_API_BASE_URL), te(t)));
 	return {
 		default: n,
-		root: l(o(s(e.VITE_ROOT_API_BASE_URL), s(e.VITE_APP_ROOT_API_BASE_URL), n)),
-		tenant: l(o(s(e.VITE_TENANT_API_BASE_URL), s(e.VITE_APP_TENANT_API_BASE_URL), n)),
-		organization: l(o(s(e.VITE_ORGANIZATION_API_BASE_URL), s(e.VITE_APP_ORGANIZATION_API_BASE_URL), n))
+		root: c(a(o(e.VITE_ROOT_API_BASE_URL), o(e.VITE_APP_ROOT_API_BASE_URL), n)),
+		tenant: c(a(o(e.VITE_TENANT_API_BASE_URL), o(e.VITE_APP_TENANT_API_BASE_URL), n)),
+		organization: c(a(o(e.VITE_ORGANIZATION_API_BASE_URL), o(e.VITE_APP_ORGANIZATION_API_BASE_URL), n))
 	};
 }
-function pe(e) {
-	let t = c(o(s(e.VITE_ACCESS_TOKEN), s(e.VITE_APP_ACCESS_TOKEN), s(e.SDKWORK_ACCESS_TOKEN)));
+function de(e) {
+	let t = s(a(o(e.VITE_ACCESS_TOKEN), o(e.VITE_APP_ACCESS_TOKEN), o(e.SDKWORK_ACCESS_TOKEN)));
 	return {
 		default: t,
-		root: c(o(s(e.VITE_ROOT_ACCESS_TOKEN), s(e.VITE_APP_ROOT_ACCESS_TOKEN), t)),
-		tenant: c(o(s(e.VITE_TENANT_ACCESS_TOKEN), s(e.VITE_APP_TENANT_ACCESS_TOKEN), t)),
-		organization: c(o(s(e.VITE_ORGANIZATION_ACCESS_TOKEN), s(e.VITE_APP_ORGANIZATION_ACCESS_TOKEN), t))
+		root: s(a(o(e.VITE_ROOT_ACCESS_TOKEN), o(e.VITE_APP_ROOT_ACCESS_TOKEN), t)),
+		tenant: s(a(o(e.VITE_TENANT_ACCESS_TOKEN), o(e.VITE_APP_TENANT_ACCESS_TOKEN), t)),
+		organization: s(a(o(e.VITE_ORGANIZATION_ACCESS_TOKEN), o(e.VITE_APP_ORGANIZATION_ACCESS_TOKEN), t))
 	};
 }
-function me(e, t) {
+function fe(e, t) {
 	return e === "tenant" ? t.tenant ?? t.default : e === "organization" ? t.organization ?? t.default : t.root ?? t.default;
 }
-function g(e = se()) {
-	let t = ie(s(e.VITE_APP_ENV), s(e.MODE), s(e.NODE_ENV)), n = de(e), r = fe(e, t), i = pe(e), a = l(me(n, r) || ne(t)), d = c(me(n, i)), f = s(o(s(e.VITE_API_KEY), s(e.SDKWORK_API_KEY))), p = le(), h = ue(e, p), ae = l(o(s(e.VITE_IM_WS_URL), s(e.VITE_APP_IM_WS_URL), re(a))), oe = s(o(s(e.VITE_TENANT_ID), s(e.VITE_APP_TENANT_ID), s(e.SDKWORK_TENANT_ID))), ce = s(o(s(e.VITE_ORGANIZATION_ID), s(e.VITE_APP_ORGANIZATION_ID), s(e.SDKWORK_ORGANIZATION_ID)));
+function _(e = oe()) {
+	let t = re(o(e.VITE_APP_ENV), o(e.MODE), o(e.NODE_ENV)), n = le(e), r = ue(e, t), i = de(e), d = c(fe(n, r) || te(t)), f = s(fe(n, i)), p = o(a(o(e.VITE_API_KEY), o(e.SDKWORK_API_KEY))), h = se(), ie = ce(e, h), ae = c(a(o(e.VITE_IM_WS_URL), o(e.VITE_APP_IM_WS_URL), ne(d))), g = o(a(o(e.VITE_TENANT_ID), o(e.VITE_APP_TENANT_ID), o(e.SDKWORK_TENANT_ID))), _ = o(a(o(e.VITE_ORGANIZATION_ID), o(e.VITE_APP_ORGANIZATION_ID), o(e.SDKWORK_ORGANIZATION_ID)));
 	return {
 		appEnv: t,
 		mode: t,
@@ -147,40 +145,40 @@ function g(e = se()) {
 		isStaging: t === "staging",
 		isProduction: t === "production",
 		metadata: {
-			name: s(e.VITE_APP_NAME) || "SDKWork Desktop",
-			version: s(e.VITE_APP_VERSION) || "0.1.0"
+			name: o(e.VITE_APP_NAME) || "SDKWork Desktop",
+			version: o(e.VITE_APP_VERSION) || "0.1.0"
 		},
 		log: {
 			debug: u(e.VITE_DEBUG, t === "development"),
-			level: s(e.VITE_LOG_LEVEL) || (t === "development" ? "debug" : t === "test" ? "info" : "warn")
+			level: o(e.VITE_LOG_LEVEL) || (t === "development" ? "debug" : t === "test" ? "info" : "warn")
 		},
 		owner: {
 			mode: n,
-			tenantId: oe,
-			organizationId: ce
+			tenantId: g,
+			organizationId: _
 		},
 		api: {
-			baseUrl: a,
+			baseUrl: d,
 			baseUrls: r,
-			timeout: ee(o(s(e.VITE_TIMEOUT), s(e.SDKWORK_TIMEOUT)))
+			timeout: l(a(o(e.VITE_TIMEOUT), o(e.SDKWORK_TIMEOUT)))
 		},
 		auth: {
-			apiKey: f,
-			accessToken: d,
+			apiKey: p,
+			accessToken: f,
 			accessTokens: i,
-			mode: m(f, d)
+			mode: m(p, f)
 		},
 		realtime: { imWsUrl: ae },
 		update: {
-			appId: te(s(e.VITE_APP_ID)),
-			releaseChannel: s(e.VITE_RELEASE_CHANNEL) || "stable",
+			appId: ee(o(e.VITE_APP_ID)),
+			releaseChannel: o(e.VITE_RELEASE_CHANNEL) || "stable",
 			enableStartupCheck: u(e.VITE_ENABLE_STARTUP_UPDATE_CHECK, !0)
 		},
-		distribution: { id: s(e.VITE_DISTRIBUTION_ID) === "cn" ? "cn" : "global" },
+		distribution: { id: o(e.VITE_DISTRIBUTION_ID) === "cn" ? "cn" : "global" },
 		platform: {
-			id: h,
-			isDesktop: p || h === "desktop",
-			isTauri: p
+			id: ie,
+			isDesktop: h || ie === "desktop",
+			isTauri: h
 		},
 		vite: {
 			isDev: u(e.DEV, t === "development"),
@@ -190,18 +188,18 @@ function g(e = se()) {
 }
 //#endregion
 //#region src/internal/runtimeState.ts
-var _ = "sdkwork.core.pc-react.auth-token", v = "sdkwork.core.pc-react.access-token", y = "sdkwork.core.pc-react.refresh-token", b = "sdkwork.core.pc-react.im-session", he = "sdkwork_token", ge = "sdkwork_access_token", x = "sdkwork_refresh_token", S = {
+var pe = "sdkwork.core.pc-react.auth-token", v = "sdkwork.core.pc-react.access-token", me = "sdkwork.core.pc-react.refresh-token", y = "sdkwork.core.pc-react.im-session", he = "sdkwork_token", ge = "sdkwork_access_token", _e = "sdkwork_refresh_token", b = {
 	authToken: [he],
 	accessToken: [ge],
-	refreshToken: [x],
+	refreshToken: [_e],
 	runtimeSession: [
 		"sdkwork-notes-auth-session",
 		"sdkwork-drive-auth-session",
 		"claw-studio-auth-session"
 	],
 	imSession: []
-}, C = /* @__PURE__ */ new Map(), w = {}, T = null, E = null, D = null, _e = null, O = null, ve = null, k = null, ye = 0, A = "idle", j = null, M = /* @__PURE__ */ new Set(), N = /* @__PURE__ */ new Set();
-function be() {
+}, x = /* @__PURE__ */ new Map(), S = {}, ve = null, ye = null, C = null, be = null, w = null, xe = null, T = null, Se = 0, Ce = "idle", E = null, we = /* @__PURE__ */ new Set(), Te = /* @__PURE__ */ new Set();
+function Ee() {
 	if (typeof window > "u") return null;
 	try {
 		return window.localStorage;
@@ -209,49 +207,59 @@ function be() {
 		return null;
 	}
 }
-function xe() {
+function De() {
 	return {
 		getItem(e) {
-			return C.get(e) ?? null;
+			return x.get(e) ?? null;
 		},
 		setItem(e, t) {
-			C.set(e, t);
+			x.set(e, t);
 		},
 		removeItem(e) {
-			C.delete(e);
+			x.delete(e);
 		}
 	};
 }
-function P(e = [], t = []) {
+function D(e = [], t = []) {
 	return Array.from(new Set([...e, ...t].filter((e) => e && e.trim())));
 }
-function Se(e, t) {
+function Oe(e, t) {
 	if (!(!e && !t)) return {
-		authToken: P(e?.authToken, t?.authToken),
-		accessToken: P(e?.accessToken, t?.accessToken),
-		refreshToken: P(e?.refreshToken, t?.refreshToken),
-		runtimeSession: P(e?.runtimeSession, t?.runtimeSession),
-		imSession: P(e?.imSession, t?.imSession)
+		authToken: D(e?.authToken, t?.authToken),
+		accessToken: D(e?.accessToken, t?.accessToken),
+		refreshToken: D(e?.refreshToken, t?.refreshToken),
+		runtimeSession: D(e?.runtimeSession, t?.runtimeSession),
+		imSession: D(e?.imSession, t?.imSession)
 	};
 }
-function F() {
+function ke(e, t) {
+	if (!(!e && !t)) return {
+		defaults: {
+			...e?.defaults ?? {},
+			...t?.defaults ?? {}
+		},
+		storageKey: t?.storageKey ?? e?.storageKey
+	};
+}
+function O() {
 	return {
-		authToken: P(S.authToken, w.legacyStorageKeys?.authToken),
-		accessToken: P(S.accessToken, w.legacyStorageKeys?.accessToken),
-		refreshToken: P(S.refreshToken, w.legacyStorageKeys?.refreshToken),
-		runtimeSession: P(S.runtimeSession, w.legacyStorageKeys?.runtimeSession),
-		imSession: P(S.imSession, w.legacyStorageKeys?.imSession)
+		authToken: D(b.authToken, S.legacyStorageKeys?.authToken),
+		accessToken: D(b.accessToken, S.legacyStorageKeys?.accessToken),
+		refreshToken: D(b.refreshToken, S.legacyStorageKeys?.refreshToken),
+		runtimeSession: D(b.runtimeSession, S.legacyStorageKeys?.runtimeSession),
+		imSession: D(b.imSession, S.legacyStorageKeys?.imSession)
 	};
 }
-function Ce(e, t) {
+function Ae(e, t) {
 	return {
 		envSource: t.envSource ? {
 			...e.envSource ?? {},
 			...t.envSource
 		} : e.envSource,
-		envGlobalKeys: t.envGlobalKeys ? P(e.envGlobalKeys, t.envGlobalKeys) : e.envGlobalKeys,
+		envGlobalKeys: t.envGlobalKeys ? D(e.envGlobalKeys, t.envGlobalKeys) : e.envGlobalKeys,
 		storage: t.storage ?? e.storage,
-		legacyStorageKeys: Se(e.legacyStorageKeys, t.legacyStorageKeys),
+		legacyStorageKeys: Oe(e.legacyStorageKeys, t.legacyStorageKeys),
+		preferences: ke(e.preferences, t.preferences),
 		appClientCompatAliases: {
 			...e.appClientCompatAliases ?? {},
 			...t.appClientCompatAliases ?? {}
@@ -267,40 +275,40 @@ function Ce(e, t) {
 		}
 	};
 }
-function I() {
-	ye += 1;
-	for (let e of M) e();
+function k() {
+	Se += 1;
+	for (let e of we) e();
 }
-function L(e) {
-	A = e;
-	for (let t of N) t(e);
-	I();
+function A(e) {
+	Ce = e;
+	for (let t of Te) t(e);
+	k();
 }
-function we() {
+function je() {
 	return {
-		...se(),
-		...ce(w.envGlobalKeys ?? []),
-		...w.envSource ?? {}
+		...oe(),
+		...g(S.envGlobalKeys ?? []),
+		...S.envSource ?? {}
 	};
 }
-function R(e) {
+function j(e) {
 	try {
-		return V().getItem(e) ?? void 0;
+		return P().getItem(e) ?? void 0;
 	} catch {
 		return;
 	}
 }
-function z(e) {
+function M(e) {
 	for (let t of e) {
-		let e = R(t);
+		let e = j(t);
 		if (e !== void 0) return e;
 	}
 }
-function Te() {
-	for (let e of F().runtimeSession) {
-		let t = f(R(e));
+function Me() {
+	for (let e of O().runtimeSession) {
+		let t = f(j(e));
 		if (!t) continue;
-		let n = c(t.authToken), r = c(t.accessToken), i = typeof t.refreshToken == "string" ? t.refreshToken.trim() : "";
+		let n = s(t.authToken), r = s(t.accessToken), i = typeof t.refreshToken == "string" ? t.refreshToken.trim() : "";
 		if (!(!n && !r && !i)) return {
 			authToken: n || void 0,
 			accessToken: r || void 0,
@@ -309,54 +317,56 @@ function Te() {
 	}
 	return {};
 }
-function B(e, t) {
+function N(e, t) {
 	try {
 		if (t && t.trim()) {
-			V().setItem(e, t.trim());
+			P().setItem(e, t.trim());
 			return;
 		}
-		V().removeItem(e);
+		P().removeItem(e);
 	} catch {}
 }
-function V() {
-	return w.storage ? w.storage : be() || xe();
+function P() {
+	return S.storage ? S.storage : Ee() || De();
 }
-function H() {
-	return w;
+function F() {
+	return S;
 }
-function Ee(e = {}) {
-	return w = Ce(w, e), Ue(), I(), w;
+function Ne(e = {}) {
+	return S = Ae(S, e), Ze(), k(), S;
 }
-function De(e) {
-	return M.add(e), () => {
-		M.delete(e);
+function Pe(e) {
+	return we.add(e), () => {
+		we.delete(e);
 	};
 }
-function U() {
-	return ye;
+function I() {
+	return Se;
 }
-function Oe(e) {
-	return N.add(e), e(A), () => {
-		N.delete(e);
+function Fe(e) {
+	return Te.add(e), e(Ce), () => {
+		Te.delete(e);
 	};
 }
-function ke() {
-	return A;
+function Ie() {
+	return Ce;
 }
-function Ae(e) {
-	L(e);
+function Le(e) {
+	A(e);
 }
-function je(e) {
-	j?.(), j = e.realtime?.onConnectionStateChange?.((e) => {
-		L(e);
+function Re(e) {
+	E?.(), E = e.lifecycle?.onStateChange?.((e) => {
+		A(typeof e == "string" ? e : e.status || "idle");
+	}) ?? e.realtime?.onConnectionStateChange?.((e) => {
+		A(e);
 	}) ?? null;
 }
-function W() {
-	return T ||= g(we()), T;
+function L() {
+	return ve ||= _(je()), ve;
 }
-function Me(e, t = G()) {
-	let n = w.headersResolver?.({
-		env: W(),
+function ze(e, t = R()) {
+	let n = S.headersResolver?.({
+		env: L(),
 		session: t,
 		target: e
 	});
@@ -365,70 +375,70 @@ function Me(e, t = G()) {
 		return !t.trim() || !r || (e[t] = r), e;
 	}, {}) : {};
 }
-function G() {
-	let e = W(), t = Te(), n = c(R(_) || t.authToken || z(F().authToken)), r = c(R(v) || t.accessToken || z(F().accessToken)), i = c(D?.accessToken || O?.accessToken), a = (R(y) || t.refreshToken || z(F().refreshToken) || "").trim(), o = f(R(b));
-	return !k && o && (k = o), {
+function R() {
+	let e = L(), t = Me(), n = s(j(pe) || t.authToken || M(O().authToken)), r = s(j(v) || t.accessToken || M(O().accessToken)), i = s(C?.accessToken || w?.accessToken), a = (j(me) || t.refreshToken || M(O().refreshToken) || "").trim(), o = f(j(y));
+	return !T && o && (T = o), {
 		authToken: n || void 0,
 		accessToken: r || i || e.auth.accessToken || void 0,
 		refreshToken: a || void 0,
-		im: k ? d(k) : void 0
+		im: T ? d(T) : void 0
 	};
 }
-function Ne(e) {
-	let t = G(), n = W(), r = e.authToken === void 0 ? c(t.authToken) : c(e.authToken), i = e.accessToken === void 0 ? c(t.accessToken || n.auth.accessToken) : c(e.accessToken), a = e.refreshToken === void 0 ? (t.refreshToken || "").trim() : (e.refreshToken || "").trim();
-	return B(_, r || void 0), e.accessToken === void 0 ? B(v, c(R(v)) || void 0) : !i || i === n.auth.accessToken ? B(v, void 0) : B(v, i), B(y, a || void 0), e.im && K(e.im), I(), G();
+function Be(e) {
+	let t = R(), n = L(), r = e.authToken === void 0 ? s(t.authToken) : s(e.authToken), i = e.accessToken === void 0 ? s(t.accessToken || n.auth.accessToken) : s(e.accessToken), a = e.refreshToken === void 0 ? (t.refreshToken || "").trim() : (e.refreshToken || "").trim();
+	return N(pe, r || void 0), e.accessToken === void 0 ? N(v, s(j(v)) || void 0) : !i || i === n.auth.accessToken ? N(v, void 0) : N(v, i), N(me, a || void 0), e.im && He(e.im), k(), R();
 }
-function Pe() {
-	B(_, void 0), B(v, void 0), B(y, void 0), B(b, void 0);
+function Ve() {
+	N(pe, void 0), N(v, void 0), N(me, void 0), N(y, void 0);
 	for (let e of [
-		...F().authToken,
-		...F().accessToken,
-		...F().refreshToken,
-		...F().runtimeSession,
-		...F().imSession
-	]) B(e, void 0);
-	k = null, I();
+		...O().authToken,
+		...O().accessToken,
+		...O().refreshToken,
+		...O().runtimeSession,
+		...O().imSession
+	]) N(e, void 0);
+	T = null, k();
 }
-function K(e) {
-	k = e ? d(e) : null, e ? B(b, p(e)) : B(b, void 0), I();
-}
-function Fe() {
-	return k ||= f(R(b)), k ? d(k) : null;
-}
-function Ie(e, t) {
-	E = e, D = t;
-}
-function Le() {
-	return E ?? null;
-}
-function Re() {
-	return D ?? null;
-}
-function ze(e, t) {
-	_e = e, O = t;
-}
-function q() {
-	return _e ?? null;
-}
-function Be() {
-	return O ?? null;
-}
-function Ve(e) {
-	ve = e;
-}
-function He() {
-	return ve ?? null;
+function He(e) {
+	T = e ? d(e) : null, e ? N(y, p(e)) : N(y, void 0), k();
 }
 function Ue() {
-	T = null, E = null, D = null, _e = null, O = null, ve = null, k = null, j?.(), j = null, L("idle");
+	return T ||= f(j(y)), T ? d(T) : null;
 }
-function We(e = {}) {
+function We(e, t) {
+	ye = e, C = t;
+}
+function Ge() {
+	return ye ?? null;
+}
+function Ke() {
+	return C ?? null;
+}
+function qe(e, t) {
+	be = e, w = t;
+}
+function Je() {
+	return be ?? null;
+}
+function Ye() {
+	return w ?? null;
+}
+function Xe(e) {
+	xe = e;
+}
+function z() {
+	return xe ?? null;
+}
+function Ze() {
+	ve = null, ye = null, C = null, be = null, w = null, xe = null, T = null, E?.(), E = null, A("idle");
+}
+function Qe(e = {}) {
 	let { clearStorage: t = !0, clearConfiguration: n = !0 } = e;
-	t && (C.clear(), Pe()), n && (w = {}), Ue(), I();
+	t && (x.clear(), Ve()), n && (S = {}), Ze(), k();
 }
 //#endregion
 //#region src/app/index.ts
-var Ge = {
+var $e = {
 	analytics: "analytic",
 	assets: "asset",
 	coupons: "coupon",
@@ -438,32 +448,32 @@ var Ge = {
 	projects: "project",
 	settings: "setting",
 	workspaces: "workspace"
-}, Ke = /* @__PURE__ */ new WeakMap();
-function qe(e = {}) {
+}, et = /* @__PURE__ */ new WeakMap();
+function tt(e = {}) {
 	return {
-		...H().appConfigOverrides ?? {},
+		...F().appConfigOverrides ?? {},
 		...e
 	};
 }
-function J(e, t, n) {
-	e.setAuthToken(c(t.authToken)), e.setAccessToken(c(t.accessToken || n));
+function B(e, t, n) {
+	e.setAuthToken(s(t.authToken)), e.setAccessToken(s(t.accessToken || n));
 }
-function Je(e, t) {
-	let n = G(), r = qe(e);
+function nt(e, t) {
+	let n = R(), r = tt(e);
 	return {
 		...n,
-		authToken: r.authToken === void 0 ? c(n.authToken) : c(r.authToken),
-		accessToken: r.accessToken === void 0 ? c(n.accessToken || t) : c(r.accessToken)
+		authToken: r.authToken === void 0 ? s(n.authToken) : s(r.authToken),
+		accessToken: r.accessToken === void 0 ? s(n.accessToken || t) : s(r.accessToken)
 	};
 }
-function Ye() {
-	return { ...H().appClientCompatAliases ?? {} };
+function rt() {
+	return { ...F().appClientCompatAliases ?? {} };
 }
-function Xe(e, t = Ye()) {
+function it(e, t = rt()) {
 	let n = Object.entries(t).filter(([e, t]) => e.trim() && t.trim() && e !== t).sort(([e], [t]) => e.localeCompare(t));
 	if (n.length === 0) return e;
 	let r = JSON.stringify(n);
-	if (Ke.get(e) === r) return e;
+	if (et.get(e) === r) return e;
 	for (let [t, r] of n) Object.defineProperty(e, t, {
 		configurable: !0,
 		enumerable: !1,
@@ -471,10 +481,10 @@ function Xe(e, t = Ye()) {
 			return e[r];
 		}
 	});
-	return Ke.set(e, r), e;
+	return et.set(e, r), e;
 }
-function Ze(e = {}, t = { includeRuntimeSession: !0 }) {
-	let n = W(), r = t.includeRuntimeSession ? G() : void 0, i = qe(e), a = c(i.accessToken || r?.accessToken || n.auth.accessToken), o = (i.apiKey || n.auth.apiKey || "").trim(), s = c(i.authToken || r?.authToken);
+function at(e = {}, t = { includeRuntimeSession: !0 }) {
+	let n = L(), r = t.includeRuntimeSession ? R() : void 0, i = tt(e), a = s(i.accessToken || r?.accessToken || n.auth.accessToken), o = (i.apiKey || n.auth.apiKey || "").trim(), c = s(i.authToken || r?.authToken);
 	return {
 		env: n.appEnv,
 		ownerMode: n.owner.mode,
@@ -482,24 +492,24 @@ function Ze(e = {}, t = { includeRuntimeSession: !0 }) {
 		timeout: i.timeout ?? n.api.timeout,
 		apiKey: o || void 0,
 		accessToken: a || void 0,
-		authToken: s || void 0,
+		authToken: c || void 0,
 		tenantId: (i.tenantId ?? n.owner.tenantId) || void 0,
 		organizationId: (i.organizationId ?? n.owner.organizationId) || void 0,
 		platform: i.platform ?? n.platform.id,
 		tokenManager: i.tokenManager,
-		authMode: m(o, a, s, i.authMode),
+		authMode: m(o, a, c, i.authMode),
 		headers: {
-			...Me("app", {
+			...ze("app", {
 				...r ?? {},
-				authToken: s || void 0,
+				authToken: c || void 0,
 				accessToken: a || void 0
 			}),
 			...i.headers ?? {}
 		}
 	};
 }
-function Qe(e, t = {}) {
-	let n = c(t.accessToken || e.auth.accessToken), r = (t.apiKey || e.auth.apiKey || "").trim(), i = c(t.authToken);
+function ot(e, t = {}) {
+	let n = s(t.accessToken || e.auth.accessToken), r = (t.apiKey || e.auth.apiKey || "").trim(), i = s(t.authToken);
 	return {
 		env: e.appEnv,
 		ownerMode: e.owner.mode,
@@ -516,82 +526,143 @@ function Qe(e, t = {}) {
 		headers: { ...t.headers ?? {} }
 	};
 }
-function $e(e, t = {}) {
-	return Qe(g(e), t);
-}
-function et(e) {
-	return c(g(e).auth.accessToken);
-}
-function tt(e = {}) {
-	return Ze(e, { includeRuntimeSession: !0 });
-}
-function nt(e = {}) {
-	return Ze(e, { includeRuntimeSession: !1 });
-}
-function rt(t = {}) {
-	let n = nt(t), r = Xe(e(n));
-	return J(r, Je(t, n.accessToken || ""), n.accessToken || ""), Ie(r, n), r;
-}
-function it() {
-	return Le() || rt();
-}
-function Y() {
-	return Re();
-}
-function at() {
-	return c(G().accessToken) || c(Y()?.accessToken) || c(W().auth.accessToken);
-}
-function ot(t = {}) {
-	let n = nt(t), r = Xe(e(n));
-	return J(r, Je(t, n.accessToken || ""), n.accessToken || ""), r;
-}
-function st(e = {}) {
-	if (Object.keys(e).length > 0) return ot(e);
-	let t = it(), n = Y() || nt();
-	return J(t, G(), n.accessToken || ""), t;
-}
-function X(e = G()) {
-	let t = Le(), n = Y();
-	!t || !n || J(t, e, n.accessToken || "");
+function st(e, t = {}) {
+	return ot(_(e), t);
 }
 function ct(e) {
-	let t = it();
-	t.setAuthToken(c(e.authToken)), t.setAccessToken(c(e.accessToken || at()));
+	return s(_(e).auth.accessToken);
+}
+function lt(e = {}) {
+	return at(e, { includeRuntimeSession: !0 });
+}
+function ut(e = {}) {
+	return at(e, { includeRuntimeSession: !1 });
+}
+function dt(t = {}) {
+	let n = ut(t), r = it(e(n));
+	return B(r, nt(t, n.accessToken || ""), n.accessToken || ""), We(r, n), r;
+}
+function ft() {
+	return Ge() || dt();
+}
+function V() {
+	return Ke();
+}
+function pt() {
+	return s(R().accessToken) || s(V()?.accessToken) || s(L().auth.accessToken);
+}
+function mt(t = {}) {
+	let n = ut(t), r = it(e(n));
+	return B(r, nt(t, n.accessToken || ""), n.accessToken || ""), r;
+}
+function ht(e = {}) {
+	if (Object.keys(e).length > 0) return mt(e);
+	let t = ft(), n = V() || ut();
+	return B(t, R(), n.accessToken || ""), t;
+}
+function H(e = R()) {
+	let t = Ge(), n = V();
+	!t || !n || B(t, e, n.accessToken || "");
+}
+function gt(e) {
+	let t = ft();
+	t.setAuthToken(s(e.authToken)), t.setAccessToken(s(e.accessToken || pt()));
 }
 //#endregion
 //#region src/im/index.ts
-function lt(e = {}) {
+var U = null;
+function _t(e = {}) {
+	let t = {
+		...e,
+		accessToken: s(e.accessToken),
+		authToken: s(e.authToken),
+		refreshToken: e.refreshToken?.trim() || void 0
+	}, n = () => typeof t.expiresAt == "number" && Date.now() >= t.expiresAt;
 	return {
-		...H().imConfigOverrides ?? {},
+		getAccessToken: () => t.accessToken,
+		getAuthToken: () => t.authToken,
+		getRefreshToken: () => t.refreshToken,
+		getTokens: () => ({ ...t }),
+		setTokens: (e) => {
+			t = {
+				...e,
+				accessToken: s(e.accessToken),
+				authToken: s(e.authToken),
+				refreshToken: e.refreshToken?.trim() || void 0
+			};
+		},
+		setAccessToken: (e) => {
+			t.accessToken = s(e) || void 0;
+		},
+		setAuthToken: (e) => {
+			t.authToken = s(e) || void 0;
+		},
+		setRefreshToken: (e) => {
+			t.refreshToken = e.trim() || void 0;
+		},
+		clearTokens: () => {
+			t = {};
+		},
+		clearAuthToken: () => {
+			t.authToken = void 0;
+		},
+		clearAccessToken: () => {
+			t.accessToken = void 0;
+		},
+		isExpired: n,
+		isValid: () => !!(t.accessToken || t.authToken) && !n(),
+		hasToken: () => !!(t.accessToken || t.authToken),
+		hasAuthToken: () => !!t.authToken,
+		hasAccessToken: () => !!t.accessToken,
+		willExpireIn: (e) => typeof t.expiresAt == "number" && Date.now() + e * 1e3 >= t.expiresAt
+	};
+}
+function vt(e = {}) {
+	return {
+		...F().imConfigOverrides ?? {},
 		...e
 	};
 }
-function ut(e, t, n) {
-	e.setAuthToken(c(t.authToken)), e.setAccessToken(c(t.accessToken || n));
+function yt(e, t, n) {
+	e && (e.setAccessToken(s(t.accessToken || n)), e.setAuthToken(s(t.authToken)), t.refreshToken !== void 0 && e.setRefreshToken(t.refreshToken || ""));
 }
-function dt(e, t) {
-	let n = G(), r = lt(e);
+function bt(e, t) {
+	let n = R(), r = vt(e);
 	return {
 		...n,
-		authToken: r.authToken === void 0 ? c(n.authToken) : c(r.authToken),
-		accessToken: r.accessToken === void 0 ? c(n.accessToken || t) : c(r.accessToken)
+		authToken: r.authToken === void 0 ? s(n.authToken) : s(r.authToken),
+		accessToken: r.accessToken === void 0 ? s(n.accessToken || t) : s(r.accessToken)
 	};
 }
-function Z(e, t) {
-	let n = c(t);
-	e.session.setAuthToken(n);
+function W(e, t, n, r) {
+	yt(t.tokenManager, n, r);
+	let i = s(n.authToken || t.authToken || t.apiKey);
+	if (i) {
+		e.auth.useToken(i);
+		return;
+	}
+	e.auth.clearToken();
 }
-function ft(e = {}) {
-	let t = pt(e, { includeRuntimeSession: !1 }), n = dt(e, t.accessToken || ""), r = c(e.authToken || n.authToken), i = r || c(t.accessToken);
+function xt(e = {}) {
+	let t = St(e, { includeRuntimeSession: !1 }), n = bt(e, t.accessToken || ""), r = s(e.authToken || n.authToken || t.authToken), i = s(n.accessToken || t.accessToken), a = e.tokenManager ?? _t({
+		accessToken: i,
+		authToken: r || s(t.apiKey),
+		refreshToken: n.refreshToken
+	});
 	return {
 		...t,
 		authToken: r || void 0,
 		accessToken: i || void 0,
+		tokenManager: a,
 		authMode: m(t.apiKey, i, r, t.authMode)
 	};
 }
-function pt(e = {}, t = { includeRuntimeSession: !0 }) {
-	let n = W(), r = t.includeRuntimeSession ? G() : void 0, i = lt(e), a = c(i.accessToken || r?.accessToken || n.auth.accessToken), o = (i.apiKey || n.auth.apiKey || "").trim(), s = c(i.authToken || r?.authToken);
+function St(e = {}, t = { includeRuntimeSession: !0 }) {
+	let n = L(), r = t.includeRuntimeSession ? R() : void 0, i = vt(e), a = s(i.accessToken || r?.accessToken || n.auth.accessToken), o = (i.apiKey || n.auth.apiKey || "").trim(), c = s(i.authToken || r?.authToken), l = i.tokenManager ?? _t({
+		accessToken: a,
+		authToken: c || s(o),
+		refreshToken: r?.refreshToken
+	});
 	return {
 		env: n.appEnv,
 		ownerMode: n.owner.mode,
@@ -599,24 +670,48 @@ function pt(e = {}, t = { includeRuntimeSession: !0 }) {
 		timeout: i.timeout ?? n.api.timeout,
 		apiKey: o || void 0,
 		accessToken: a || void 0,
-		authToken: s || void 0,
+		authToken: c || void 0,
 		tenantId: (i.tenantId ?? n.owner.tenantId) || void 0,
 		organizationId: (i.organizationId ?? n.owner.organizationId) || void 0,
 		platform: i.platform ?? n.platform.id,
-		tokenManager: i.tokenManager,
-		authMode: m(o, a, s, i.authMode),
+		tokenManager: l,
+		authMode: m(o, a, c, i.authMode),
+		websocketBaseUrl: i.websocketBaseUrl || n.realtime.imWsUrl || void 0,
 		headers: {
-			...Me("im", {
+			...ze("im", {
 				...r ?? {},
-				authToken: s || void 0,
+				authToken: c || void 0,
 				accessToken: a || void 0
 			}),
 			...i.headers ?? {}
 		}
 	};
 }
-function mt(e, t = {}) {
-	let n = g(e), r = c(t.accessToken || n.auth.accessToken), i = (t.apiKey || n.auth.apiKey || "").trim(), a = (t.tenantId ?? n.owner.tenantId) || void 0, o = (t.organizationId ?? n.owner.organizationId) || void 0, s = t.platform ?? n.platform.id;
+function Ct(e) {
+	return new t({
+		baseUrl: e.baseUrl,
+		apiBaseUrl: e.baseUrl,
+		websocketBaseUrl: e.websocketBaseUrl,
+		authToken: s(e.authToken || e.apiKey),
+		tokenProvider: e.tokenManager,
+		timeout: e.timeout,
+		headers: e.headers
+	});
+}
+function wt(e, t) {
+	if (!e) return { deviceId: t.userId };
+	if ("wsUrl" in e || "token" in e || "uid" in e) {
+		let n = e.token ? { Authorization: `Bearer ${s(e.token)}` } : void 0;
+		return {
+			deviceId: e.deviceId || e.uid || t.userId,
+			url: e.wsUrl,
+			headers: n
+		};
+	}
+	return e;
+}
+function Tt(e, t = {}) {
+	let n = _(e), r = s(t.accessToken || n.auth.accessToken), i = (t.apiKey || n.auth.apiKey || "").trim(), a = (t.tenantId ?? n.owner.tenantId) || void 0, o = (t.organizationId ?? n.owner.organizationId) || void 0, c = t.platform ?? n.platform.id, l = t.websocketBaseUrl || n.realtime.imWsUrl || void 0;
 	return {
 		baseUrl: t.baseUrl || n.api.baseUrl,
 		timeout: t.timeout ?? n.api.timeout,
@@ -624,118 +719,331 @@ function mt(e, t = {}) {
 		...r ? { accessToken: r } : {},
 		...a ? { tenantId: a } : {},
 		...o ? { organizationId: o } : {},
-		...s ? { platform: s } : {}
+		...c ? { platform: c } : {},
+		...l ? { websocketBaseUrl: l } : {}
 	};
 }
-function ht(e = {}) {
-	return pt(e, { includeRuntimeSession: !0 });
+function Et(e = {}) {
+	return St(e, { includeRuntimeSession: !0 });
 }
-function gt(e = {}) {
-	return pt(e, { includeRuntimeSession: !1 });
+function Dt(e = {}) {
+	return St(e, { includeRuntimeSession: !1 });
 }
-function _t(e = {}) {
-	let n = gt(e), r = t(n);
-	return ut(r, dt(e, n.accessToken || ""), n.accessToken || ""), ze(r, n), r;
+function Ot(e = {}) {
+	let t = xt(e), n = {
+		...Dt(e),
+		tokenManager: t.tokenManager
+	}, r = Ct(t);
+	return W(r, n, R(), n.accessToken || ""), qe(r, n), Xe(r), r;
 }
-function vt() {
-	return q() || _t();
+function kt() {
+	return z() || Ot();
 }
-function Q() {
-	return Be();
+function At(e = {}) {
+	let t = z();
+	if (t) return t;
+	let n = Dt(e), r = Ct(n);
+	return W(r, n, bt(e, n.accessToken || ""), n.accessToken || ""), qe(r, n), Xe(r), r;
 }
-function yt(e = {}) {
-	let i = new n({
-		backendClient: t(ft(e)),
-		realtimeAdapter: new r()
-	});
-	return Z(i, G().authToken), Ve(i), je(i), i;
+function jt() {
+	return Je() || At();
 }
-function bt() {
-	return He() || yt();
+function Mt() {
+	return Ye();
 }
-async function xt(e, t = {}) {
+var Nt = At, Pt = jt, Ft = Mt;
+async function It(e, t = {}) {
 	let n = {
 		userId: (e.userId || "").trim(),
 		username: (e.username || "").trim(),
 		displayName: (e.displayName || "").trim(),
-		authToken: c(e.authToken),
-		...c(e.accessToken) ? { accessToken: c(e.accessToken) } : {},
+		authToken: s(e.authToken),
+		...s(e.accessToken) ? { accessToken: s(e.accessToken) } : {},
 		...e.refreshToken?.trim() ? { refreshToken: e.refreshToken.trim() } : {}
 	};
 	if (!n.authToken) throw Error("IM auth token is required");
 	if (!n.userId) throw Error("IM user id is required");
 	if (!n.username) throw Error("IM username is required");
-	let r = Ne({
+	let r = Be({
 		authToken: n.authToken,
 		accessToken: n.accessToken,
 		refreshToken: n.refreshToken
 	});
-	X(r);
-	let i = vt(), a = Q() || ht();
-	i.setAuthToken(n.authToken), i.setAccessToken(r.accessToken || a.accessToken || W().auth.accessToken || "");
-	let o = bt();
-	return Z(o, n.authToken), t.bootstrapRealtime !== !1 && await o.session.connectRealtime(t.realtimeSession), K(n), n;
+	H(r);
+	let i = kt(), a = Mt() || Et();
+	return W(i, a, r, a.accessToken || L().auth.accessToken || ""), t.bootstrapRealtime !== !1 && (U?.disconnect(1e3, "reconnect"), U = await i.connect(wt(t.realtimeSession, n)), Re(U)), He(n), n;
 }
-async function St() {
-	let e = He();
-	if (e) {
-		try {
-			await e.session.disconnectRealtime();
-		} catch {}
-		Z(e, "");
+async function Lt() {
+	U?.disconnect(1e3, "logout"), U = null;
+	let e = z(), t = Ye();
+	e && t && W(e, t, {
+		authToken: "",
+		accessToken: t.accessToken || L().auth.accessToken || ""
+	}, t.accessToken || L().auth.accessToken || ""), He(null), Le("idle");
+}
+function Rt(e = R()) {
+	let t = z(), n = Ye();
+	t && n && W(t, n, e, n.accessToken || "");
+}
+//#endregion
+//#region src/internal/preferencesState.ts
+var zt = "sdkwork.core.pc-react.preferences", Bt = !0, Vt = 0, Ht = !1, Ut = !1, Wt = "", Gt = "", G = an(), Kt = /* @__PURE__ */ new Set();
+function qt(e) {
+	let t = typeof e == "string" ? e.trim().toLowerCase() : "";
+	if (t === "dark" || t === "light" || t === "system") return t;
+}
+function Jt(e) {
+	let t = typeof e == "string" ? e.trim().toLowerCase() : "";
+	if (t === "green-tech" || t === "lobster" || t === "rose" || t === "tech-blue" || t === "violet" || t === "zinc") return t;
+}
+function K(e) {
+	return (typeof e == "string" ? e.trim() : "") || void 0;
+}
+function Yt(e) {
+	let t = typeof e == "string" ? e.trim() : "";
+	if (t) return t.toLowerCase() === "system" ? "system" : K(t);
+}
+function Xt() {
+	if (!(typeof navigator > "u")) return K(navigator.language);
+}
+function Zt() {
+	if (!(typeof document > "u")) return K(document.documentElement.lang);
+}
+function Qt(e = {}) {
+	return K(e.documentLanguage) || K(e.navigatorLanguage) || Zt() || Xt() || "en-US";
+}
+function $t() {
+	return F().preferences;
+}
+function en() {
+	return K($t()?.storageKey) || zt;
+}
+function tn() {
+	return f(P().getItem(en()));
+}
+function nn(e = {}) {
+	let t = $t()?.defaults ?? {}, n = Yt(t.localePreference ?? t.locale) || "system";
+	return {
+		locale: n === "system" ? Qt(e) : n,
+		localePreference: n,
+		themeColor: Jt(t.themeColor) || "lobster",
+		themeSelection: qt(t.themeSelection) || "system"
+	};
+}
+function rn(e, t = {}) {
+	let n = nn(t), r = Yt(e?.localePreference ?? e?.locale) || n.localePreference;
+	return {
+		locale: r === "system" ? Qt(t) : r,
+		localePreference: r,
+		themeColor: Jt(e?.themeColor) || n.themeColor,
+		themeSelection: qt(e?.themeSelection) || n.themeSelection
+	};
+}
+function an() {
+	return typeof window > "u" || typeof window.matchMedia != "function" ? Bt : window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function on(e) {
+	return p(e);
+}
+function sn(e) {
+	return p(e);
+}
+function q(e = {}) {
+	return rn(tn(), e);
+}
+function cn(e = {}) {
+	let t = q(e), n = e.prefersDark ?? G, r = t.themeSelection === "system" ? n ? "dark" : "light" : t.themeSelection;
+	return {
+		...t,
+		colorMode: r
+	};
+}
+function ln() {
+	Vt += 1;
+	for (let e of Kt) e();
+}
+function un() {
+	Wt = on(q()), Gt = sn(cn());
+}
+function J() {
+	let e = on(q()), t = sn(cn());
+	e === Wt && t === Gt || (Wt = e, Gt = t, ln());
+}
+function Y() {
+	Ht ||= (un(), Pe(() => {
+		J();
+	}), !0);
+}
+function dn() {
+	if (!Ut) {
+		if (G = an(), typeof window < "u" && typeof window.matchMedia == "function") {
+			let e = window.matchMedia("(prefers-color-scheme: dark)"), t = (e) => {
+				let t = e.matches;
+				G !== t && (G = t, J());
+			};
+			e.addEventListener?.("change", t), e.addListener?.(t);
+		}
+		Ut = !0;
 	}
-	let t = q(), n = Q();
-	t && (t.setAuthToken(""), t.setAccessToken(n?.accessToken || W().auth.accessToken || "")), K(null), Ae("idle");
 }
-function Ct(e = G()) {
-	let t = q(), n = Q();
-	t && n && ut(t, e, n.accessToken || "");
-	let r = He();
-	r && Z(r, e.authToken);
+function fn() {
+	return Vt;
+}
+function pn() {
+	return Y(), q();
+}
+function mn(e) {
+	Y();
+	let t = rn({
+		...pn(),
+		...e,
+		...e.localePreference === void 0 ? e.locale === void 0 ? {} : { localePreference: e.locale } : { localePreference: e.localePreference }
+	});
+	return P().setItem(en(), p(t)), J(), t;
+}
+function hn() {
+	Y(), P().removeItem(en()), J();
+}
+function X(e = {}) {
+	return cn(e);
+}
+function gn(e) {
+	return Y(), dn(), Kt.add(e), () => {
+		Kt.delete(e);
+	};
+}
+//#endregion
+//#region src/runtime/shell-bridge.ts
+function _n(e) {
+	let t = String(e).trim().toLowerCase();
+	return t.startsWith("ar") || t.startsWith("fa") || t.startsWith("he") || t.startsWith("ps") || t.startsWith("ur");
+}
+function vn(e) {
+	return String(e || "").trim() || "en-US";
+}
+function yn(e) {
+	if (e instanceof Date) return Number.isNaN(e.getTime()) ? null : e;
+	if (typeof e == "number") {
+		let t = new Date(e);
+		return Number.isNaN(t.getTime()) ? null : t;
+	}
+	if (typeof e == "string") {
+		let t = e.trim();
+		if (!t) return null;
+		if (/^\d{4}-\d{2}-\d{2}$/.test(t)) {
+			let [e, n, r] = t.split("-").map(Number), i = new Date(e, n - 1, r);
+			return Number.isNaN(i.getTime()) ? null : i;
+		}
+		let n = new Date(t);
+		return Number.isNaN(n.getTime()) ? null : n;
+	}
+	return null;
+}
+function Z(e) {
+	return mn(e), X();
+}
+function bn(e) {
+	return _n(vn(e)) ? "rtl" : "ltr";
+}
+function xn(e) {
+	let t = vn(e);
+	return {
+		formatDate(e, n) {
+			let r = yn(e);
+			return r ? new Intl.DateTimeFormat(t, n).format(r) : "";
+		},
+		formatDateTime(e, n) {
+			let r = yn(e);
+			return r ? new Intl.DateTimeFormat(t, n ?? {
+				dateStyle: "medium",
+				timeStyle: "short"
+			}).format(r) : "";
+		},
+		locale: t
+	};
+}
+function Sn() {
+	let e = X(), t = e.locale;
+	return {
+		actions: {
+			patchPreferences: Z,
+			setLocalePreference(e) {
+				return Z({ localePreference: e });
+			},
+			setThemeColor(e) {
+				return Z({ themeColor: e });
+			},
+			setThemeSelection(e) {
+				return Z({ themeSelection: e });
+			}
+		},
+		dir: bn(t),
+		env: L(),
+		formatters: xn(t),
+		locale: t,
+		preferences: e,
+		session: R()
+	};
 }
 //#endregion
 //#region src/runtime/index.ts
-function wt(e = {}) {
-	return Ee(e);
+function Cn(e = {}) {
+	return Ne(e);
 }
-function Tt(e = {}) {
-	We(e);
+function wn(e = {}) {
+	Qe(e);
 }
-function Et(e) {
-	let t = Ne(e);
-	return X(t), Ct(t), t;
+function Tn(e) {
+	let t = Be(e);
+	return H(t), Rt(t), t;
 }
-var Dt = Et;
-function Ot() {
-	return G();
+var En = Tn;
+function Q() {
+	return R();
 }
-var kt = Ot;
-async function At() {
-	Pe(), X(G()), await St();
+var Dn = Q;
+async function On() {
+	Ve(), H(R()), await Lt();
 }
-var jt = {
+var kn = {
 	authToken: he,
 	accessToken: ge,
-	refreshToken: x
+	refreshToken: _e
 };
 //#endregion
 //#region src/hooks/index.ts
 function $() {
-	i(De, U, U);
+	r(Pe, I, I);
 }
-function Mt() {
-	return $(), st();
+function An() {
+	r(gn, fn, fn);
 }
-function Nt() {
-	return $(), bt();
+function jn() {
+	return $(), ht();
 }
-function Pt() {
-	return $(), W();
+function Mn() {
+	return $(), kt();
 }
-function Ft() {
-	return $(), Ot();
+function Nn() {
+	return $(), L();
+}
+function Pn() {
+	return $(), Q();
+}
+function Fn() {
+	return An(), pn();
+}
+function In() {
+	return An(), X();
+}
+function Ln() {
+	return $(), An(), n(() => Sn(), [
+		L(),
+		X(),
+		Q()
+	]);
 }
 //#endregion
-export { Ge as SDKWORK_PC_REACT_DEFAULT_APP_CLIENT_COMPAT_ALIASES, h as SDKWORK_PC_REACT_ENV_KEYS, ge as SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY, he as SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY, x as SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY, jt as SDKWORK_PC_REACT_LEGACY_STORAGE_KEYS, ct as applyAppClientSessionTokens, X as applyRuntimeSessionToAppClient, Ct as applyRuntimeSessionToImClient, St as clearImClientSession, At as clearPcReactRuntimeSession, wt as configurePcReactRuntime, tt as createAppClientConfig, $e as createAppClientConfigFromEnv, ht as createImClientConfig, mt as createImRuntimeConfigFromEnv, g as createPcReactEnvConfig, ot as createScopedAppClient, Xe as decorateAppClientCompatAliases, it as getAppClient, Y as getAppClientConfig, st as getAppClientWithSession, vt as getImBackendClient, Q as getImBackendClientConfig, bt as getImClient, ke as getImConnectionState, Fe as getImSessionIdentity, W as getPcReactEnv, U as getPcReactRuntimeVersion, rt as initAppClient, _t as initImBackendClient, yt as initImClient, Dt as persistPcReactRuntimeSession, Et as persistRuntimeSession, se as readPcReactEnvSource, ce as readPcReactNamedGlobalEnvSources, kt as readPcReactRuntimeSession, Ot as readRuntimeSession, Tt as resetPcReactRuntime, at as resolveAppClientAccessToken, et as resolveAppClientAccessTokenFromEnv, Oe as subscribeImConnectionState, De as subscribePcReactRuntime, xt as syncImClientSession, Mt as useAppClient, Nt as useImClient, Pt as usePcReactEnv, Ft as usePcReactRuntimeSession };
+export { $e as SDKWORK_PC_REACT_DEFAULT_APP_CLIENT_COMPAT_ALIASES, h as SDKWORK_PC_REACT_ENV_KEYS, ge as SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY, he as SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY, _e as SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY, kn as SDKWORK_PC_REACT_LEGACY_STORAGE_KEYS, gt as applyAppClientSessionTokens, H as applyRuntimeSessionToAppClient, Rt as applyRuntimeSessionToImClient, Lt as clearImClientSession, On as clearPcReactRuntimeSession, hn as clearPcReactShellPreferences, Cn as configurePcReactRuntime, lt as createAppClientConfig, st as createAppClientConfigFromEnv, Et as createImClientConfig, Tt as createImRuntimeConfigFromEnv, _ as createPcReactEnvConfig, xn as createPcReactLocaleFormatting, mt as createScopedAppClient, it as decorateAppClientCompatAliases, ft as getAppClient, V as getAppClientConfig, ht as getAppClientWithSession, Pt as getImBackendClient, Ft as getImBackendClientConfig, kt as getImClient, Ie as getImConnectionState, Ue as getImSessionIdentity, jt as getImTransportClient, Mt as getImTransportClientConfig, L as getPcReactEnv, I as getPcReactRuntimeVersion, dt as initAppClient, Nt as initImBackendClient, Ot as initImClient, At as initImTransportClient, En as persistPcReactRuntimeSession, mn as persistPcReactShellPreferences, Tn as persistRuntimeSession, oe as readPcReactEnvSource, g as readPcReactNamedGlobalEnvSources, Dn as readPcReactRuntimeSession, Sn as readPcReactShellBridgeValue, pn as readPcReactShellPreferences, Q as readRuntimeSession, wn as resetPcReactRuntime, pt as resolveAppClientAccessToken, ct as resolveAppClientAccessTokenFromEnv, bn as resolvePcReactLocaleDirection, X as resolvePcReactShellPreferences, Fe as subscribeImConnectionState, Pe as subscribePcReactRuntime, gn as subscribePcReactShellPreferences, It as syncImClientSession, jn as useAppClient, Mn as useImClient, Nn as usePcReactEnv, In as usePcReactResolvedShellPreferences, Pn as usePcReactRuntimeSession, Ln as usePcReactShellBridgeValue, Fn as usePcReactShellPreferences };
 
 //# sourceMappingURL=index.js.map

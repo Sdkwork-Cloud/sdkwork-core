@@ -51,7 +51,7 @@
   },
   "scripts": {
     "check:boundary": "node ./scripts/check-package-boundary.mjs",
-    "build:deps": "pnpm -r --filter @sdkwork/sdk-common --filter @sdkwork/app-sdk --filter @sdkwork/im-backend-sdk --filter @openchat/sdkwork-im-wukongim-adapter --filter @openchat/sdkwork-im-sdk build",
+    "build:deps": "pnpm --filter @sdkwork/sdk-common build && pnpm --filter @sdkwork/app-sdk build && pnpm --filter @sdkwork/im-sdk build && pnpm --filter @sdkwork/rtc-sdk build",
     "build": "pnpm run build:deps && vite build",
     "test": "vitest run",
     "typecheck": "pnpm run build:deps && tsc --noEmit"
@@ -61,10 +61,9 @@
     "react-dom": ">=18.2.0"
   },
   "dependencies": {
-    "@openchat/sdkwork-im-sdk": "workspace:*",
-    "@openchat/sdkwork-im-wukongim-adapter": "workspace:*",
-    "@sdkwork/app-sdk": "workspace:*",
-    "@sdkwork/im-backend-sdk": "workspace:*"
+    "@sdkwork/app-sdk": "^1.0.34",
+    "@sdkwork/im-sdk": "^0.1.0",
+    "@sdkwork/rtc-sdk": "^0.1.0"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.2",
