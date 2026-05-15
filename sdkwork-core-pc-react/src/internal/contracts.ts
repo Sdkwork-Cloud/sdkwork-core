@@ -1,5 +1,12 @@
 import type { SdkworkAppConfig } from "@sdkwork/app-sdk";
-import type { ImTokenProvider } from "@sdkwork/im-sdk";
+import type {
+  ImConnectOptions,
+  ImLiveConnection,
+  ImLiveState,
+  ImSdkClient,
+  ImSdkClientOptions,
+  ImTokenProvider,
+} from "@sdkwork/im-sdk";
 
 export type PcReactRuntimeEnv = "development" | "test" | "staging" | "production";
 
@@ -178,6 +185,20 @@ export interface ConfigurePcReactRuntimeOptions {
   imConfigOverrides?: Partial<PcReactImTransportConfig>;
 }
 
+export type PcReactRealtimeTokenSnapshot = ReturnType<ImTokenProvider["getTokens"]>;
+
+export type PcReactRealtimeTokenProvider = ImTokenProvider;
+
+export type PcReactRealtimeConnectOptions = ImConnectOptions;
+
+export type PcReactRealtimeConnection = ImLiveConnection;
+
+export type PcReactRealtimeClient = Pick<ImSdkClient, "auth" | "connect">;
+
+export type PcReactRealtimeClientFactory = (config: PcReactImClientConfig) => PcReactRealtimeClient;
+
+export type PcReactRealtimeState = ImLiveState | { status?: string } | string;
+
 export interface PcReactAppClientConfig extends SdkworkAppConfig {
   env: PcReactRuntimeEnv;
   ownerMode: PcReactOwnerMode;
@@ -191,10 +212,13 @@ export interface PcReactImTransportConfig {
   tenantId?: string;
   organizationId?: string;
   platform?: string;
-  tokenManager?: ImTokenProvider;
+  clientFactory?: PcReactRealtimeClientFactory;
+  tokenManager?: PcReactRealtimeTokenProvider;
   timeout?: number;
   authMode?: PcReactAuthMode;
   headers?: Record<string, string>;
+  webSocketAuth?: ImSdkClientOptions["webSocketAuth"];
+  webSocketFactory?: ImSdkClientOptions["webSocketFactory"];
   websocketBaseUrl?: string;
 }
 

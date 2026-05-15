@@ -8,6 +8,7 @@ import type {
   PcReactPreferenceOptions,
   PcReactRuntimeClientTarget,
   PcReactRuntimeSession,
+  PcReactRealtimeState,
   PcReactStorageAdapter
 } from "./contracts";
 import {
@@ -284,7 +285,7 @@ export function setImConnectionState(state: string): void {
 
 export function bindImConnectionState(runtime: {
   lifecycle?: {
-    onStateChange?: (listener: (state: { status?: string } | string) => void) => () => void;
+    onStateChange?: (listener: (state: PcReactRealtimeState) => void) => () => void;
   };
   realtime?: {
     onConnectionStateChange?: (listener: (state: string) => void) => () => void;
@@ -313,6 +314,18 @@ export function resolveRuntimeHeaders(
   target: PcReactRuntimeClientTarget,
   session: PcReactRuntimeSession = readPcReactRuntimeSession()
 ): Record<string, string> {
+  const standardHeaders: Record<string, string> = {};
+  const authToken = normalizeBearerToken(session.authToken);
+  const accessToken = normalizeBearerToken(session.accessToken);
+
+  if (authToken) {
+    standardHeaders.Authorization = `Bearer ${authToken}`;
+  }
+
+  if (accessToken) {
+    standardHeaders["Sdkwork-Access-Token"] = accessToken;
+  }
+
   const headers = runtimeOptions.headersResolver?.({
     env: getPcReactEnv(),
     session,
@@ -320,7 +333,7 @@ export function resolveRuntimeHeaders(
   });
 
   if (!headers) {
-    return {};
+    return standardHeaders;
   }
 
   return Object.entries(headers).reduce<Record<string, string>>((accumulator, [headerName, headerValue]) => {
@@ -331,7 +344,7 @@ export function resolveRuntimeHeaders(
 
     accumulator[headerName] = normalizedValue;
     return accumulator;
-  }, {});
+  }, standardHeaders);
 }
 
 export function readPcReactRuntimeSession(): PcReactRuntimeSession {

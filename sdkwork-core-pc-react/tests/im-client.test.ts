@@ -211,9 +211,29 @@ describe("im client runtime", () => {
       }
     });
 
-    expect(config.headers).toEqual({
+    expect(config.headers).toMatchObject({
       "Accept-Language": "zh-CN",
+      "Sdkwork-Access-Token": "runtime-access-token",
       "X-Im-Trace": "trace-1"
     });
+  });
+
+  it("injects the standard SDKWork access token header into IM transport config", async () => {
+    const { configurePcReactRuntime, createImClientConfig } = await import("../src");
+
+    configurePcReactRuntime({
+      envSource: {
+        VITE_API_BASE_URL: "https://api.example.com/",
+        VITE_AUTH_TOKEN: "auth-token",
+        VITE_ACCESS_TOKEN: "access-token"
+      }
+    });
+
+    const config = createImClientConfig();
+
+    expect(config.headers).toMatchObject({
+      "Sdkwork-Access-Token": "access-token"
+    });
+    expect(config.headers).not.toHaveProperty("Access-Token");
   });
 });

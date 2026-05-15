@@ -4,10 +4,10 @@
   "packageManager": "pnpm@10.30.3",
   "pnpm": {
     "overrides": {
-      "@sdkwork/app-sdk": "file:../../spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript",
-      "@sdkwork/sdk-common": "file:../../sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript",
-      "@sdkwork/im-sdk": "file:../craw-chat/sdks/sdkwork-im-sdk/sdkwork-im-sdk-typescript",
-      "@sdkwork/rtc-sdk": "file:../craw-chat/sdks/sdkwork-rtc-sdk/sdkwork-rtc-sdk-typescript"
+      "@sdkwork/app-sdk": "workspace:*",
+      "@sdkwork/sdk-common": "workspace:*",
+      "@sdkwork/im-sdk": "workspace:*",
+      "@sdkwork/rtc-sdk": "workspace:*"
     }
   },
   "scripts": {

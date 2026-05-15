@@ -1,10 +1,5 @@
-import {
-  ImSdkClient,
-  type ImConnectOptions,
-  type ImLiveConnection,
-  type ImLiveState,
-  type ImTokenProvider
-} from "@sdkwork/im-sdk";
+import { ImSdkClient } from "@sdkwork/im-sdk";
+import type { ImSdkClientOptions } from "@sdkwork/im-sdk";
 import { createPcReactEnvConfig } from "../env/index";
 import { applyRuntimeSessionToAppClient } from "../app/index";
 import type {
@@ -12,6 +7,11 @@ import type {
   PcReactEnvSource,
   PcReactImClientConfig,
   PcReactImTransportConfig,
+  PcReactRealtimeClient,
+  PcReactRealtimeConnectOptions,
+  PcReactRealtimeConnection,
+  PcReactRealtimeTokenProvider,
+  PcReactRealtimeTokenSnapshot,
   PcReactRuntimeSession
 } from "../internal/contracts";
 import { normalizeBearerToken, resolveAuthMode } from "../internal/helpers";
@@ -43,15 +43,13 @@ interface LegacyRealtimeSession {
 
 export interface SyncImClientSessionOptions {
   bootstrapRealtime?: boolean;
-  realtimeSession?: ImConnectOptions | LegacyRealtimeSession;
+  realtimeSession?: PcReactRealtimeConnectOptions | LegacyRealtimeSession;
 }
 
-type ImTokenSnapshot = ReturnType<ImTokenProvider["getTokens"]>;
+let activeImLiveConnection: PcReactRealtimeConnection | null = null;
 
-let activeImLiveConnection: ImLiveConnection | null = null;
-
-function createPcReactImTokenProvider(initialTokens: Partial<ImTokenSnapshot> = {}): ImTokenProvider {
-  let tokens: ImTokenSnapshot = {
+function createPcReactImTokenProvider(initialTokens: Partial<PcReactRealtimeTokenSnapshot> = {}): PcReactRealtimeTokenProvider {
+  let tokens: PcReactRealtimeTokenSnapshot = {
     ...initialTokens,
     accessToken: normalizeBearerToken(initialTokens.accessToken),
     authToken: normalizeBearerToken(initialTokens.authToken),
@@ -65,7 +63,7 @@ function createPcReactImTokenProvider(initialTokens: Partial<ImTokenSnapshot> = 
     getAuthToken: () => tokens.authToken,
     getRefreshToken: () => tokens.refreshToken,
     getTokens: () => ({ ...tokens }),
-    setTokens: (nextTokens: ImTokenSnapshot) => {
+    setTokens: (nextTokens: PcReactRealtimeTokenSnapshot) => {
       tokens = {
         ...nextTokens,
         accessToken: normalizeBearerToken(nextTokens.accessToken),
@@ -110,7 +108,7 @@ function mergeImClientOverrides(overrides: Partial<PcReactImTransportConfig> = {
 }
 
 function applySessionTokensToTokenProvider(
-  tokenProvider: ImTokenProvider | undefined,
+  tokenProvider: PcReactRealtimeTokenProvider | undefined,
   session: PcReactRuntimeSession,
   fallbackAccessToken: string
 ): void {
@@ -146,7 +144,7 @@ function resolveEffectiveClientSession(
 }
 
 function applySessionTokensToImRuntime(
-  runtime: ImSdkClient,
+  runtime: PcReactRealtimeClient,
   config: PcReactImTransportConfig,
   session: PcReactRuntimeSession,
   fallbackAccessToken: string
@@ -245,16 +243,22 @@ function createResolvedImClientConfig(
   };
 }
 
-function createImSdkClient(config: PcReactImClientConfig): ImSdkClient {
+function createImSdkClient(config: PcReactImClientConfig): PcReactRealtimeClient {
+  if (config.clientFactory) {
+    return config.clientFactory(config);
+  }
+
   const options = {
     baseUrl: config.baseUrl,
     apiBaseUrl: config.baseUrl,
     websocketBaseUrl: config.websocketBaseUrl,
     authToken: normalizeBearerToken(config.authToken || config.apiKey),
     tokenProvider: config.tokenManager,
+    webSocketAuth: config.webSocketAuth,
+    webSocketFactory: config.webSocketFactory,
     timeout: config.timeout,
     headers: config.headers
-  } as ConstructorParameters<typeof ImSdkClient>[0] & {
+  } as ImSdkClientOptions & {
     headers?: Record<string, string>;
     timeout?: number;
   };
@@ -265,7 +269,7 @@ function createImSdkClient(config: PcReactImClientConfig): ImSdkClient {
 function normalizeRealtimeConnectOptions(
   realtimeSession: SyncImClientSessionOptions["realtimeSession"],
   identity: PcImSessionIdentity
-): ImConnectOptions {
+): PcReactRealtimeConnectOptions {
   if (!realtimeSession) {
     return {
       deviceId: identity.userId
@@ -328,7 +332,7 @@ function createImTransportClientConfig(overrides: Partial<PcReactImTransportConf
   });
 }
 
-export function initImClient(overrides: Partial<PcReactImTransportConfig> = {}): ImSdkClient {
+export function initImClient(overrides: Partial<PcReactImTransportConfig> = {}): PcReactRealtimeClient {
   const config = createImSessionBridgeConfig(overrides);
   const cachedConfig = {
     ...createImTransportClientConfig(overrides),
@@ -342,8 +346,8 @@ export function initImClient(overrides: Partial<PcReactImTransportConfig> = {}):
   return runtime;
 }
 
-export function getImClient(): ImSdkClient {
-  const cachedRuntime = getImClientCache<ImSdkClient>();
+export function getImClient(): PcReactRealtimeClient {
+  const cachedRuntime = getImClientCache<PcReactRealtimeClient>();
   if (cachedRuntime) {
     return cachedRuntime;
   }
@@ -351,8 +355,8 @@ export function getImClient(): ImSdkClient {
   return initImClient();
 }
 
-export function initImTransportClient(overrides: Partial<PcReactImTransportConfig> = {}): ImSdkClient {
-  const cachedRuntime = getImClientCache<ImSdkClient>();
+export function initImTransportClient(overrides: Partial<PcReactImTransportConfig> = {}): PcReactRealtimeClient {
+  const cachedRuntime = getImClientCache<PcReactRealtimeClient>();
   if (cachedRuntime) {
     return cachedRuntime;
   }
@@ -366,8 +370,8 @@ export function initImTransportClient(overrides: Partial<PcReactImTransportConfi
   return runtime;
 }
 
-export function getImTransportClient(): ImSdkClient {
-  const cachedClient = getImTransportClientCache<ImSdkClient>();
+export function getImTransportClient(): PcReactRealtimeClient {
+  const cachedClient = getImTransportClientCache<PcReactRealtimeClient>();
   if (cachedClient) {
     return cachedClient;
   }
@@ -433,7 +437,7 @@ export async function clearImClientSession(): Promise<void> {
   activeImLiveConnection?.disconnect(1000, "logout");
   activeImLiveConnection = null;
 
-  const runtime = getImClientCache<ImSdkClient>();
+  const runtime = getImClientCache<PcReactRealtimeClient>();
   const config = getImTransportConfigCache<PcReactImClientConfig>();
   if (runtime && config) {
     applySessionTokensToImRuntime(
@@ -452,7 +456,7 @@ export async function clearImClientSession(): Promise<void> {
 }
 
 export function applyRuntimeSessionToImClient(session: PcReactRuntimeSession = readPcReactRuntimeSession()): void {
-  const runtime = getImClientCache<ImSdkClient>();
+  const runtime = getImClientCache<PcReactRealtimeClient>();
   const config = getImTransportConfigCache<PcReactImClientConfig>();
   if (runtime && config) {
     applySessionTokensToImRuntime(runtime, config, session, config.accessToken || "");
@@ -465,4 +469,8 @@ export {
   subscribeImConnectionState
 };
 
-export type { ImLiveConnection, ImLiveState };
+export type {
+  PcReactRealtimeClient as ImLiveClient,
+  PcReactRealtimeConnection as ImLiveConnection,
+  PcReactRealtimeConnectOptions as ImConnectOptions
+};

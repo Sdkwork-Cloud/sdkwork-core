@@ -278,4 +278,23 @@ describe("app client runtime", () => {
       "X-App-Trace": "trace-1"
     });
   });
+
+  it("injects the standard SDKWork access token header into app client config", async () => {
+    const { configurePcReactRuntime, createAppClientConfig } = await import("../src");
+
+    configurePcReactRuntime({
+      envSource: {
+        VITE_API_BASE_URL: "https://api.example.com",
+        VITE_AUTH_TOKEN: "auth-token",
+        VITE_ACCESS_TOKEN: "access-token"
+      }
+    });
+
+    const config = createAppClientConfig();
+
+    expect(config.headers).toMatchObject({
+      "Sdkwork-Access-Token": "access-token"
+    });
+    expect(config.headers).not.toHaveProperty("Access-Token");
+  });
 });

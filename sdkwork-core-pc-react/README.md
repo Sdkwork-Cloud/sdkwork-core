@@ -233,8 +233,8 @@ This is intended for Magic Studio style compatibility migration while keeping th
 
 Dual-token mode:
 
-- `Access-Token: <owner-scoped-access-token>`
 - `Authorization: Bearer <auth-token>`
+- `Sdkwork-Access-Token: <owner-scoped-access-token>`
 
 API key mode:
 
@@ -316,13 +316,13 @@ Effective request header preview:
 ```json
 {
   "appSdk": {
-    "Access-Token": "tenant-access-token",
     "Authorization": "Bearer user-auth-token",
+    "Sdkwork-Access-Token": "tenant-access-token",
     "Accept-Language": "zh-CN"
   },
   "imBackendSdk": {
-    "Access-Token": "tenant-access-token",
     "Authorization": "Bearer user-auth-token",
+    "Sdkwork-Access-Token": "tenant-access-token",
     "Accept-Language": "zh-CN"
   }
 }
