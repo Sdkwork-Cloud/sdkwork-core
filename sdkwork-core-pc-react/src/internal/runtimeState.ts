@@ -19,17 +19,17 @@ import {
 import { cloneJsonValue, normalizeBearerToken, safeParseJson, safeStringifyJson } from "./helpers";
 
 const AUTH_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.auth-token";
-const ACCESS_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.access-token";
+const ACCESS_TOKEN_STORAGE_KEY = "core.pc-react.access-token";
 const REFRESH_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.refresh-token";
 const IM_SESSION_STORAGE_KEY = "sdkwork.core.pc-react.im-session";
 
+export const SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY = ACCESS_TOKEN_STORAGE_KEY;
 export const SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY = "sdkwork_token";
-export const SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY = "sdkwork_access_token";
 export const SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY = "sdkwork_refresh_token";
 
 const DEFAULT_LEGACY_STORAGE_KEYS: Required<PcReactLegacyStorageKeys> = {
   authToken: [SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY],
-  accessToken: [SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY],
+  accessToken: [],
   refreshToken: [SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY],
   runtimeSession: ["sdkwork-notes-auth-session", "sdkwork-drive-auth-session", "claw-studio-auth-session"],
   imSession: []
@@ -232,6 +232,12 @@ function writeStorageValue(key: string, value?: string): void {
   }
 }
 
+function clearLegacySplitAccessTokenStorage(): void {
+  for (const key of resolveLegacyStorageKeys().accessToken) {
+    writeStorageValue(key, undefined);
+  }
+}
+
 export function resolveStorageAdapter(): PcReactStorageAdapter {
   if (runtimeOptions.storage) {
     return runtimeOptions.storage;
@@ -323,7 +329,7 @@ export function resolveRuntimeHeaders(
   }
 
   if (accessToken) {
-    standardHeaders["Sdkwork-Access-Token"] = accessToken;
+    standardHeaders["Access-Token"] = accessToken;
   }
 
   const headers = runtimeOptions.headersResolver?.({
@@ -404,8 +410,10 @@ export function persistPcReactRuntimeSession(tokens: PcReactRuntimeSession): PcR
     writeStorageValue(ACCESS_TOKEN_STORAGE_KEY, runtimeOverride || undefined);
   } else if (!nextAccessToken || nextAccessToken === env.auth.accessToken) {
     writeStorageValue(ACCESS_TOKEN_STORAGE_KEY, undefined);
+    clearLegacySplitAccessTokenStorage();
   } else {
     writeStorageValue(ACCESS_TOKEN_STORAGE_KEY, nextAccessToken);
+    clearLegacySplitAccessTokenStorage();
   }
 
   writeStorageValue(REFRESH_TOKEN_STORAGE_KEY, nextRefreshToken || undefined);

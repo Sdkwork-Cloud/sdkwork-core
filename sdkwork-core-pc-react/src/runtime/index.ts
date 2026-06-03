@@ -10,7 +10,6 @@ import {
   persistPcReactRuntimeSession as persistStoredPcReactRuntimeSession,
   readPcReactRuntimeSession as readStoredPcReactRuntimeSession,
   resetRuntime,
-  SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY,
   subscribeImConnectionState,
@@ -48,7 +47,6 @@ export async function clearPcReactRuntimeSession(): Promise<void> {
 
 export const SDKWORK_PC_REACT_LEGACY_STORAGE_KEYS = {
   authToken: SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY,
-  accessToken: SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY,
   refreshToken: SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY
 } as const;
 
@@ -62,7 +60,6 @@ export {
   getImConnectionState,
   getPcReactEnv,
   getPcReactRuntimeVersion,
-  SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY,
   subscribeImConnectionState,

@@ -13,7 +13,7 @@ It centralizes:
 - standard `useAppClient` and `useImClient` hooks
 - standard `usePcReactShellPreferences` and `usePcReactResolvedShellPreferences` hooks
 - runtime session persistence
-- legacy desktop storage migration
+- legacy desktop auth/refresh/session storage migration
 - injected desktop env compatibility
 - app client compatibility aliases
 
@@ -30,7 +30,7 @@ One package owns five concerns:
 2. Session
    - persists `authToken`, `accessToken`, `refreshToken`, and IM identity
    - keeps `authToken` and `accessToken` separated
-   - automatically reads legacy desktop storage keys during migration
+   - automatically reads legacy desktop auth, refresh, and JSON session keys during migration
 
 3. Clients
    - provides one shared app sdk client
@@ -141,7 +141,6 @@ Compatibility env keys that are still supported for migration:
 - `VITE_APP_ACCESS_TOKEN`
 - `VITE_APP_PLATFORM`
 - `SDKWORK_API_BASE_URL`
-- `SDKWORK_ACCESS_TOKEN`
 - `SDKWORK_API_KEY`
 - `SDKWORK_TENANT_ID`
 - `SDKWORK_ORGANIZATION_ID`
@@ -158,10 +157,12 @@ Injected desktop env compatibility:
 Standard storage keys:
 
 - `sdkwork.core.pc-react.auth-token`
-- `sdkwork.core.pc-react.access-token`
+- `core.pc-react.access-token`
 - `sdkwork.core.pc-react.refresh-token`
 - `sdkwork.core.pc-react.im-session`
 - `sdkwork.core.pc-react.preferences`
+
+Split access-token storage is intentionally not migrated by default; hosts with a private legacy key may pass it through `legacyStorageKeys.accessToken`, and the runtime will rewrite future values to `core.pc-react.access-token`.
 
 ## Shell preference standard
 
@@ -194,7 +195,6 @@ This separation is intentional: clearing runtime auth state should not clear the
 Automatically supported legacy migration keys:
 
 - `sdkwork_token`
-- `sdkwork_access_token`
 - `sdkwork_refresh_token`
 - `sdkwork-notes-auth-session`
 - `sdkwork-drive-auth-session`
@@ -234,7 +234,7 @@ This is intended for Magic Studio style compatibility migration while keeping th
 Dual-token mode:
 
 - `Authorization: Bearer <auth-token>`
-- `Sdkwork-Access-Token: <owner-scoped-access-token>`
+- `Access-Token: <owner-scoped-access-token>`
 
 API key mode:
 
@@ -317,12 +317,12 @@ Effective request header preview:
 {
   "appSdk": {
     "Authorization": "Bearer user-auth-token",
-    "Sdkwork-Access-Token": "tenant-access-token",
+    "Access-Token": "tenant-access-token",
     "Accept-Language": "zh-CN"
   },
   "imBackendSdk": {
     "Authorization": "Bearer user-auth-token",
-    "Sdkwork-Access-Token": "tenant-access-token",
+    "Access-Token": "tenant-access-token",
     "Accept-Language": "zh-CN"
   }
 }

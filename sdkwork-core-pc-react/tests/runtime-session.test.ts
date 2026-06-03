@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 const AUTH_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.auth-token";
-const ACCESS_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.access-token";
+const ACCESS_TOKEN_STORAGE_KEY = "core.pc-react.access-token";
 const IM_SESSION_STORAGE_KEY = "sdkwork.core.pc-react.im-session";
+const HOST_LEGACY_ACCESS_TOKEN_STORAGE_KEY = "host.desktop.legacy-access-token";
 
 function createStorage(entries: Record<string, string>) {
   const values = new Map(Object.entries(entries));
@@ -71,7 +72,7 @@ describe("runtime session storage", () => {
     });
   });
 
-  it("reads legacy split token storage keys during migration", async () => {
+  it("does not read unconfigured split access token storage by default", async () => {
     const { configurePcReactRuntime, readPcReactRuntimeSession, resetPcReactRuntime } = await import("../src");
 
     resetPcReactRuntime();
@@ -79,17 +80,61 @@ describe("runtime session storage", () => {
     configurePcReactRuntime({
       storage: createStorage({
         sdkwork_token: "legacy-auth",
-        sdkwork_access_token: "legacy-access",
+        vendor_access_token: "legacy-access",
         sdkwork_refresh_token: "legacy-refresh"
       })
     });
 
     expect(readPcReactRuntimeSession()).toEqual({
       authToken: "legacy-auth",
-      accessToken: "legacy-access",
+      accessToken: undefined,
       refreshToken: "legacy-refresh",
       im: undefined
     });
+  });
+
+  it("does not read unconfigured host split access token storage by default", async () => {
+    const { configurePcReactRuntime, readPcReactRuntimeSession, resetPcReactRuntime } = await import("../src");
+    const storage = createStorage({
+      [AUTH_TOKEN_STORAGE_KEY]: "auth-token",
+      [HOST_LEGACY_ACCESS_TOKEN_STORAGE_KEY]: "legacy-access"
+    });
+
+    resetPcReactRuntime();
+
+    configurePcReactRuntime({ storage });
+
+    expect(readPcReactRuntimeSession().accessToken).toBeUndefined();
+  });
+
+  it("migrates an explicitly configured split access token storage key without writing it as the standard key", async () => {
+    const {
+      configurePcReactRuntime,
+      persistPcReactRuntimeSession,
+      readPcReactRuntimeSession,
+      resetPcReactRuntime
+    } = await import("../src");
+    const storage = createStorage({
+      [AUTH_TOKEN_STORAGE_KEY]: "auth-token",
+      [HOST_LEGACY_ACCESS_TOKEN_STORAGE_KEY]: "legacy-access"
+    });
+
+    resetPcReactRuntime();
+
+    configurePcReactRuntime({
+      storage,
+      legacyStorageKeys: {
+        accessToken: [HOST_LEGACY_ACCESS_TOKEN_STORAGE_KEY]
+      }
+    });
+
+    expect(readPcReactRuntimeSession().accessToken).toBe("legacy-access");
+
+    persistPcReactRuntimeSession({ accessToken: "standard-access" });
+
+    expect(storage.getItem(ACCESS_TOKEN_STORAGE_KEY)).toBe("standard-access");
+    expect(storage.getItem(HOST_LEGACY_ACCESS_TOKEN_STORAGE_KEY)).toBeNull();
+    expect(readPcReactRuntimeSession().accessToken).toBe("standard-access");
   });
 
   it("reads legacy JSON auth session storage during migration", async () => {

@@ -32,14 +32,13 @@ describe("createPcReactEnvConfig", () => {
     expect(env.platform.id).toBe("desktop");
   });
 
-  it("prefers primary vite keys over compatibility fallbacks", () => {
+  it("does not accept branded access token env fallbacks", () => {
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "test",
       VITE_API_BASE_URL: "https://primary.example.com/",
       VITE_APP_API_BASE_URL: "https://legacy-app.example.com",
       SDKWORK_API_BASE_URL: "https://legacy-sdk.example.com",
-      VITE_ACCESS_TOKEN: "primary-access",
-      SDKWORK_ACCESS_TOKEN: "legacy-access",
+      VENDOR_ACCESS_TOKEN: "legacy-access",
       VITE_TENANT_ID: "tenant-primary",
       SDKWORK_TENANT_ID: "tenant-legacy",
       VITE_ORGANIZATION_ID: "org-primary",
@@ -48,7 +47,7 @@ describe("createPcReactEnvConfig", () => {
 
     expect(env.appEnv).toBe("test");
     expect(env.api.baseUrl).toBe("https://primary.example.com");
-    expect(env.auth.accessToken).toBe("primary-access");
+    expect(env.auth.accessToken).toBe("");
     expect(env.owner.tenantId).toBe("tenant-primary");
     expect(env.owner.organizationId).toBe("org-primary");
   });

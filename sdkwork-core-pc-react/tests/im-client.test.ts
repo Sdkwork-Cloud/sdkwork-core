@@ -213,12 +213,12 @@ describe("im client runtime", () => {
 
     expect(config.headers).toMatchObject({
       "Accept-Language": "zh-CN",
-      "Sdkwork-Access-Token": "runtime-access-token",
+      "Access-Token": "runtime-access-token",
       "X-Im-Trace": "trace-1"
     });
   });
 
-  it("injects the standard SDKWork access token header into IM transport config", async () => {
+  it("injects the standard Access-Token header into IM transport config", async () => {
     const { configurePcReactRuntime, createImClientConfig } = await import("../src");
 
     configurePcReactRuntime({
@@ -232,8 +232,10 @@ describe("im client runtime", () => {
     const config = createImClientConfig();
 
     expect(config.headers).toMatchObject({
-      "Sdkwork-Access-Token": "access-token"
+      "Access-Token": "access-token"
     });
-    expect(config.headers).not.toHaveProperty("Access-Token");
+    expect(Object.keys(config.headers ?? {}).filter((name) => name.toLowerCase().endsWith("access-token"))).toEqual([
+      "Access-Token"
+    ]);
   });
 });

@@ -156,12 +156,7 @@ describe("app client runtime", () => {
 
     resetPcReactRuntime();
 
-    expect(
-      resolveAppClientAccessTokenFromEnv({
-        VITE_ACCESS_TOKEN: "primary-token",
-        SDKWORK_ACCESS_TOKEN: "fallback-token"
-      })
-    ).toBe("primary-token");
+    expect(resolveAppClientAccessTokenFromEnv({ VENDOR_ACCESS_TOKEN: "fallback-token" })).toBe("");
 
     configurePcReactRuntime({
       envSource: {
@@ -279,7 +274,7 @@ describe("app client runtime", () => {
     });
   });
 
-  it("injects the standard SDKWork access token header into app client config", async () => {
+  it("injects the standard Access-Token header into app client config", async () => {
     const { configurePcReactRuntime, createAppClientConfig } = await import("../src");
 
     configurePcReactRuntime({
@@ -293,8 +288,10 @@ describe("app client runtime", () => {
     const config = createAppClientConfig();
 
     expect(config.headers).toMatchObject({
-      "Sdkwork-Access-Token": "access-token"
+      "Access-Token": "access-token"
     });
-    expect(config.headers).not.toHaveProperty("Access-Token");
+    expect(Object.keys(config.headers ?? {}).filter((name) => name.toLowerCase().endsWith("access-token"))).toEqual([
+      "Access-Token"
+    ]);
   });
 });

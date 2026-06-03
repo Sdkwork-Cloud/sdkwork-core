@@ -221,8 +221,7 @@ function resolveScopedAccessTokens(source: PcReactEnvSource): OwnerScopedValue<s
   const defaultAccessToken = normalizeBearerToken(
     firstNonEmptyValue(
       normalizeString(source.VITE_ACCESS_TOKEN as string | undefined),
-      normalizeString(source.VITE_APP_ACCESS_TOKEN as string | undefined),
-      normalizeString(source.SDKWORK_ACCESS_TOKEN as string | undefined)
+      normalizeString(source.VITE_APP_ACCESS_TOKEN as string | undefined)
     )
   );
 
