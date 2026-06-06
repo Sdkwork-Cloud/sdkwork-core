@@ -1,0 +1,1 @@
+{"version":3,"file":"note-create-request.d.ts","sourceRoot":"","sources":["../../src/types/note-create-request.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,IAAI,CAAC,EAAE,MAAM,EAAE,CAAC;CACjB"}

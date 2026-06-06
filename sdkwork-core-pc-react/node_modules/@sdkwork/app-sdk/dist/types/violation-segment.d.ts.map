@@ -1,0 +1,1 @@
+{"version":3,"file":"violation-segment.d.ts","sourceRoot":"","sources":["../../src/types/violation-segment.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,gBAAgB;IAC/B,cAAc;IACd,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,cAAc;IACd,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,WAAW;IACX,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

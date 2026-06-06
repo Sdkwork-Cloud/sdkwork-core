@@ -1,0 +1,1 @@
+{"version":3,"file":"usage-time-distribution-vo.d.ts","sourceRoot":"","sources":["../../src/types/usage-time-distribution-vo.ts"],"names":[],"mappings":"AAAA,aAAa;AACb,MAAM,WAAW,uBAAuB;IACtC,mBAAmB;IACnB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,oBAAoB;IACpB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,qBAAqB;IACrB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,qBAAqB;IACrB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}

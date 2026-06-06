@@ -1,0 +1,1 @@
+{"version":3,"file":"page-market-voice-vo.d.ts","sourceRoot":"","sources":["../../src/types/page-market-voice-vo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,aAAa,EAAE,MAAM,mBAAmB,CAAC;AAEvD,MAAM,WAAW,iBAAiB;IAChC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,OAAO,CAAC,EAAE,aAAa,EAAE,CAAC;CAC3B"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"favorite-batch-check-form.d.ts","sourceRoot":"","sources":["../../src/types/favorite-batch-check-form.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,cAAc,CAAC;AAE9C,MAAM,WAAW,sBAAsB;IACrC,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,SAAS,CAAC,EAAE,MAAM,EAAE,CAAC;IACrB,KAAK,CAAC,EAAE,SAAS,EAAE,CAAC;CACrB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"frame-detection.d.ts","sourceRoot":"","sources":["../../src/types/frame-detection.ts"],"names":[],"mappings":"AAAA,UAAU;AACV,MAAM,WAAW,cAAc;IAC7B,UAAU;IACV,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,SAAS;IACT,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB"}

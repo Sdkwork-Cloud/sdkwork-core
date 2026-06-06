@@ -1,0 +1,1 @@
+{"version":3,"file":"notification-query-form.d.ts","sourceRoot":"","sources":["../../src/types/notification-query-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,OAAO,CAAC;IACf,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,aAAa,CAAC,EAAE,MAAM,CAAC;CACxB"}

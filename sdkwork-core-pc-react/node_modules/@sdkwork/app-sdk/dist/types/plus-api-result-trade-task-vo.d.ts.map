@@ -1,0 +1,1 @@
+{"version":3,"file":"plus-api-result-trade-task-vo.d.ts","sourceRoot":"","sources":["../../src/types/plus-api-result-trade-task-vo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAEnD,MAAM,WAAW,wBAAwB;IACvC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,IAAI,CAAC,EAAE,WAAW,CAAC;CACpB"}

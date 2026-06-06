@@ -1,0 +1,1 @@
+{"version":3,"file":"coupon-info-vo.d.ts","sourceRoot":"","sources":["../../src/types/coupon-info-vo.ts"],"names":[],"mappings":"AAAA,yBAAyB;AACzB,MAAM,WAAW,YAAY;IAC3B,gBAAgB;IAChB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,kBAAkB;IAClB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,sBAAsB;IACtB,cAAc,CAAC,EAAE,MAAM,CAAC;IACxB,kBAAkB;IAClB,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

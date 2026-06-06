@@ -1,0 +1,1 @@
+{"version":3,"file":"image-detection-detail.d.ts","sourceRoot":"","sources":["../../src/types/image-detection-detail.ts"],"names":[],"mappings":"AAAA,aAAa;AACb,MAAM,WAAW,oBAAoB;IACnC,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW;IACX,GAAG,CAAC,EAAE,OAAO,CAAC;IACd,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,UAAU;IACV,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}

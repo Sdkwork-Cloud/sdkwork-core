@@ -1,0 +1,1 @@
+{"version":3,"file":"game-matchmaking-form.d.ts","sourceRoot":"","sources":["../../src/types/game-matchmaking-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,mBAAmB;IAClC,QAAQ,EAAE,qBAAqB,GAAG,eAAe,GAAG,QAAQ,GAAG,OAAO,GAAG,UAAU,GAAG,UAAU,GAAG,WAAW,GAAG,cAAc,GAAG,SAAS,GAAG,QAAQ,CAAC;IACvJ,YAAY,EAAE,MAAM,CAAC;IACrB,MAAM,CAAC,EAAE,OAAO,CAAC;IACjB,mBAAmB,CAAC,EAAE,MAAM,CAAC;CAC9B"}

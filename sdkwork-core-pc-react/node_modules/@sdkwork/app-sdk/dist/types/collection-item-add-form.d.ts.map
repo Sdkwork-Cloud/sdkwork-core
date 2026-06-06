@@ -1,0 +1,1 @@
+{"version":3,"file":"collection-item-add-form.d.ts","sourceRoot":"","sources":["../../src/types/collection-item-add-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,WAAW,EAAE,MAAM,CAAC;IACpB,SAAS,EAAE,MAAM,CAAC;IAClB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}

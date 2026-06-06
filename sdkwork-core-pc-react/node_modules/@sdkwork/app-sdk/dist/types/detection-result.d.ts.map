@@ -1,0 +1,1 @@
+{"version":3,"file":"detection-result.d.ts","sourceRoot":"","sources":["../../src/types/detection-result.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,eAAe;IAC9B,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW;IACX,GAAG,CAAC,EAAE,OAAO,CAAC;IACd,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,aAAa;IACb,QAAQ,CAAC,EAAE,MAAM,EAAE,CAAC;CACrB"}

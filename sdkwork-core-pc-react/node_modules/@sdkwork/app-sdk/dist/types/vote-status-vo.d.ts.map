@@ -1,0 +1,1 @@
+{"version":3,"file":"vote-status-vo.d.ts","sourceRoot":"","sources":["../../src/types/vote-status-vo.ts"],"names":[],"mappings":"AAAA,aAAa;AACb,MAAM,WAAW,YAAY;IAC3B,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,YAAY;IACZ,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,aAAa;IACb,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

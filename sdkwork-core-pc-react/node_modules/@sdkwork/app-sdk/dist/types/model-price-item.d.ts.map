@@ -1,0 +1,1 @@
+{"version":3,"file":"model-price-item.d.ts","sourceRoot":"","sources":["../../src/types/model-price-item.ts"],"names":[],"mappings":"AAAA,8BAA8B;AAC9B,MAAM,WAAW,cAAc;IAC7B,wBAAwB;IACxB,IAAI,CAAC,EAAE,OAAO,GAAG,aAAa,GAAG,cAAc,GAAG,oBAAoB,GAAG,QAAQ,GAAG,cAAc,GAAG,OAAO,GAAG,UAAU,CAAC;IAC1H,wBAAwB;IACxB,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB"}

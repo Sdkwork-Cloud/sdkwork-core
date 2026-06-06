@@ -1,0 +1,1 @@
+{"version":3,"file":"note-batch-update-request.d.ts","sourceRoot":"","sources":["../../src/types/note-batch-update-request.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,yBAAyB,EAAE,MAAM,gCAAgC,CAAC;AAEhF,MAAM,WAAW,sBAAsB;IACrC,QAAQ,EAAE,yBAAyB,EAAE,CAAC;IACtC,iBAAiB,CAAC,EAAE,MAAM,CAAC;IAC3B,MAAM,CAAC,EAAE,OAAO,CAAC;CAClB"}

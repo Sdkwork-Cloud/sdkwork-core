@@ -1,0 +1,1 @@
+{"version":3,"file":"word-hit.d.ts","sourceRoot":"","sources":["../../src/types/word-hit.ts"],"names":[],"mappings":"AAAA,YAAY;AACZ,MAAM,WAAW,OAAO;IACtB,UAAU;IACV,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,aAAa;IACb,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,aAAa;IACb,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,YAAY;IACZ,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,WAAW;IACX,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}

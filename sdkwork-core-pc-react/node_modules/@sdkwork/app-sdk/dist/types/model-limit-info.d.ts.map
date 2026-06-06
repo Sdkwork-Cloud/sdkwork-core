@@ -1,0 +1,1 @@
+{"version":3,"file":"model-limit-info.d.ts","sourceRoot":"","sources":["../../src/types/model-limit-info.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,oBAAoB,CAAC;AAEzD,uBAAuB;AACvB,MAAM,WAAW,cAAc;IAC7B,8BAA8B;IAC9B,IAAI,CAAC,EAAE,OAAO,GAAG,SAAS,GAAG,SAAS,CAAC;IACvC,sCAAsC;IACtC,KAAK,CAAC,EAAE,cAAc,EAAE,CAAC;CAC1B"}

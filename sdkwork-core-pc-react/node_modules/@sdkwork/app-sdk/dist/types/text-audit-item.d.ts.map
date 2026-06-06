@@ -1,0 +1,1 @@
+{"version":3,"file":"text-audit-item.d.ts","sourceRoot":"","sources":["../../src/types/text-audit-item.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAEnD,YAAY;AACZ,MAAM,WAAW,aAAa;IAC5B,WAAW;IACX,EAAE,CAAC,EAAE,MAAM,CAAC;IACZ,WAAW;IACX,WAAW,CAAC,EAAE,WAAW,CAAC;CAC3B"}

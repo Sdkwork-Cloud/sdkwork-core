@@ -1,0 +1,1 @@
+{"version":3,"file":"account-deactivate-form.d.ts","sourceRoot":"","sources":["../../src/types/account-deactivate-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,OAAO,CAAC,EAAE,OAAO,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;CACjB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"hot-search-vo.d.ts","sourceRoot":"","sources":["../../src/types/hot-search-vo.ts"],"names":[],"mappings":"AAAA,aAAa;AACb,MAAM,WAAW,WAAW;IAC1B,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,UAAU;IACV,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,WAAW;IACX,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,SAAS;IACT,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

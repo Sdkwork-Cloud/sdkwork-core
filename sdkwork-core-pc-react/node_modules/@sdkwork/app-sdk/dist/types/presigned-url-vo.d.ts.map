@@ -1,0 +1,1 @@
+{"version":3,"file":"presigned-url-vo.d.ts","sourceRoot":"","sources":["../../src/types/presigned-url-vo.ts"],"names":[],"mappings":"AAAA,eAAe;AACf,MAAM,WAAW,cAAc;IAC7B,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,aAAa;IACb,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,YAAY;IACZ,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,YAAY;IACZ,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB"}

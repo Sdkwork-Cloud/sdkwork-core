@@ -1,0 +1,1 @@
+{"version":3,"file":"key-frame-result.d.ts","sourceRoot":"","sources":["../../src/types/key-frame-result.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,YAAY,EAAE,MAAM,kBAAkB,CAAC;AAErD,YAAY;AACZ,MAAM,WAAW,cAAc;IAC7B,aAAa;IACb,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,WAAW;IACX,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,WAAW;IACX,eAAe,CAAC,EAAE,YAAY,CAAC;CAChC"}
