@@ -1,7 +1,7 @@
 import { SdkworkAppConfig } from '@sdkwork/app-sdk';
-import { ConfigurePcReactRuntimeOptions, PcImSessionIdentity, PcReactEnvConfig, PcReactImTransportConfig, PcReactRuntimeClientTarget, PcReactRuntimeSession, PcReactStorageAdapter } from './contracts';
+import { ConfigurePcReactRuntimeOptions, PcImSessionIdentity, PcReactEnvConfig, PcReactImTransportConfig, PcReactRuntimeClientTarget, PcReactRuntimeSession, PcReactRealtimeState, PcReactStorageAdapter } from './contracts';
+export declare const SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY = "core.pc-react.access-token";
 export declare const SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY = "sdkwork_token";
-export declare const SDKWORK_PC_REACT_LEGACY_ACCESS_TOKEN_STORAGE_KEY = "sdkwork_access_token";
 export declare const SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY = "sdkwork_refresh_token";
 export declare function resolveStorageAdapter(): PcReactStorageAdapter;
 export declare function getRuntimeOptions(): ConfigurePcReactRuntimeOptions;
@@ -13,9 +13,7 @@ export declare function getImConnectionState(): string;
 export declare function setImConnectionState(state: string): void;
 export declare function bindImConnectionState(runtime: {
     lifecycle?: {
-        onStateChange?: (listener: (state: {
-            status?: string;
-        } | string) => void) => () => void;
+        onStateChange?: (listener: (state: PcReactRealtimeState) => void) => () => void;
     };
     realtime?: {
         onConnectionStateChange?: (listener: (state: string) => void) => () => void;

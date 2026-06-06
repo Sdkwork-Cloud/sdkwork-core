@@ -14,9 +14,7 @@ export default defineConfig({
       external: [
         "react",
         "react-dom",
-        "@sdkwork/app-sdk",
-        "@sdkwork/im-sdk",
-        "@sdkwork/rtc-sdk"
+        "@sdkwork/app-sdk"
       ]
     },
     sourcemap: true

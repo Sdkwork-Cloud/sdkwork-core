@@ -51,7 +51,7 @@
   },
   "scripts": {
     "check:boundary": "node ./scripts/check-package-boundary.mjs",
-    "build:deps": "pnpm --filter @sdkwork/sdk-common build && pnpm --filter @sdkwork/app-sdk build && pnpm --filter @sdkwork/im-sdk build && pnpm --filter @sdkwork/rtc-sdk build",
+    "build:deps": "pnpm --filter @sdkwork/sdk-common build && pnpm --filter @sdkwork/app-sdk build",
     "build": "pnpm run build:deps && vite build",
     "test": "vitest run",
     "typecheck": "pnpm run build:deps && tsc --noEmit"
@@ -62,8 +62,7 @@
   },
   "dependencies": {
     "@sdkwork/app-sdk": "^1.0.34",
-    "@sdkwork/im-sdk": "^0.1.1",
-    "@sdkwork/rtc-sdk": "^0.1.1"
+    "@sdkwork/sdk-common": "^1.0.3"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.2",

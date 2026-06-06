@@ -11,14 +11,6 @@ export default defineConfig({
       "@sdkwork/sdk-common": path.resolve(
         __dirname,
         "../../../sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript/src/index.ts"
-      ),
-      "@sdkwork/im-sdk": path.resolve(
-        __dirname,
-        "../../craw-chat/sdks/sdkwork-im-sdk/sdkwork-im-sdk-typescript/src/index.ts"
-      ),
-      "@sdkwork/rtc-sdk": path.resolve(
-        __dirname,
-        "../../craw-chat/sdks/sdkwork-rtc-sdk/sdkwork-rtc-sdk-typescript/src/index.ts"
       )
     }
   },

@@ -96,10 +96,87 @@ assert.deepEqual(
   `Consumer metadata must not expose the private generated IM package.\n${privateGeneratedPackageOffenders.join("\n")}`,
 );
 
+const retiredImSdkReferenceFiles = [
+  path.join(workspaceRoot, "package.json"),
+  path.join(workspaceRoot, "pnpm-workspace.yaml"),
+  packageJsonPath,
+  path.join(packageRoot, "README.md"),
+  path.join(packageRoot, "vite.config.ts"),
+  path.join(packageRoot, "vitest.config.ts"),
+  ...collectSourceFiles(sourceRoot),
+  ...collectSourceFiles(testRoot),
+];
+const retiredImSdkPatterns = [
+  /@sdkwork\/im-sdk/u,
+  /craw-chat\/sdks\/sdkwork-im-sdk/u,
+  new RegExp(`\\bIm${"Sdk"}Client\\b`, "u"),
+];
+const retiredImSdkOffenders = retiredImSdkReferenceFiles.flatMap((filePath) => {
+  const contents = readFileSync(filePath, "utf8");
+  return retiredImSdkPatterns
+    .filter((pattern) => pattern.test(contents))
+    .map((pattern) => `${path.relative(workspaceRoot, filePath)}: ${pattern.source}`);
+});
+
+assert.deepEqual(
+  retiredImSdkOffenders,
+  [],
+  `Desktop core must not depend on the retired IM SDK runtime.\n${retiredImSdkOffenders.join("\n")}`,
+);
+
+const rootRuntimeAndHooksFiles = [
+  path.join(packageRoot, "src", "index.ts"),
+  path.join(packageRoot, "src", "hooks", "index.ts"),
+  path.join(packageRoot, "src", "runtime", "index.ts"),
+];
+const imRuntimeBoundaryPatterns = [
+  /["']\.\/im\/index["']/u,
+  /["']\.\.\/im\/index["']/u,
+  /\buseImClient\b/u,
+  /\bgetImClient\b/u,
+  /\bapplyRuntimeSessionToImClient\b/u,
+  /\bclearImClientSession\b/u,
+  /\bgetImConnectionState\b/u,
+  /\bsubscribeImConnectionState\b/u,
+];
+const imRuntimeBoundaryOffenders = rootRuntimeAndHooksFiles.flatMap((filePath) => {
+  const contents = readFileSync(filePath, "utf8");
+  return imRuntimeBoundaryPatterns
+    .filter((pattern) => pattern.test(contents))
+    .map((pattern) => `${path.relative(workspaceRoot, filePath)}: ${pattern.source}`);
+});
+
+assert.deepEqual(
+  imRuntimeBoundaryOffenders,
+  [],
+  `Root desktop runtime and hooks must not expose IM-specific runtime APIs.\n${imRuntimeBoundaryOffenders.join("\n")}`,
+);
+
+const rtcSdkPackage = `@sdkwork/${"rtc-sdk"}`;
+const sdkworkRtcPath = `sdkwork-${"rtc"}`;
+const rtcAggregationReferenceFiles = [
+  path.join(workspaceRoot, "package.json"),
+  path.join(workspaceRoot, "pnpm-workspace.yaml"),
+  packageJsonPath,
+  path.join(packageRoot, "README.md"),
+  path.join(packageRoot, "vite.config.ts"),
+  path.join(packageRoot, "vitest.config.ts"),
+];
+const rtcAggregationOffenders = rtcAggregationReferenceFiles.flatMap((filePath) => {
+  const contents = readFileSync(filePath, "utf8");
+  return [rtcSdkPackage, sdkworkRtcPath].flatMap((token) =>
+    contents.includes(token) ? [`${path.relative(workspaceRoot, filePath)}: ${token}`] : [],
+  );
+});
+
+assert.deepEqual(
+  rtcAggregationOffenders,
+  [],
+  `Desktop core metadata must not aggregate the RTC SDK.\n${rtcAggregationOffenders.join("\n")}`,
+);
+
 const runtimeSdkDependencies = [
   "@sdkwork/app-sdk",
-  "@sdkwork/im-sdk",
-  "@sdkwork/rtc-sdk",
 ];
 const workspaceRuntimeDependencyOffenders = runtimeSdkDependencies
   .filter((dependencyName) => {

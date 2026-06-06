@@ -5,9 +5,7 @@
   "pnpm": {
     "overrides": {
       "@sdkwork/app-sdk": "workspace:*",
-      "@sdkwork/sdk-common": "workspace:*",
-      "@sdkwork/im-sdk": "workspace:*",
-      "@sdkwork/rtc-sdk": "workspace:*"
+      "@sdkwork/sdk-common": "workspace:*"
     }
   },
   "scripts": {

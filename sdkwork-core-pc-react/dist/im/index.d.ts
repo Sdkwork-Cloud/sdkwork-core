@@ -1,5 +1,4 @@
-import { ImSdkClient, ImConnectOptions, ImLiveConnection, ImLiveState } from '@sdkwork/im-sdk';
-import { PcImSessionIdentity, PcReactEnvSource, PcReactImClientConfig, PcReactImTransportConfig, PcReactRuntimeSession } from '../internal/contracts';
+import { PcImSessionIdentity, PcReactEnvSource, PcReactImClientConfig, PcReactImTransportConfig, PcReactRealtimeClient, PcReactRealtimeConnectOptions, PcReactRealtimeConnection, PcReactRuntimeSession } from '../internal/contracts';
 import { getImConnectionState, getImSessionIdentity, subscribeImConnectionState } from '../internal/runtimeState';
 interface LegacyRealtimeSession {
     deviceId?: string;
@@ -9,14 +8,14 @@ interface LegacyRealtimeSession {
 }
 export interface SyncImClientSessionOptions {
     bootstrapRealtime?: boolean;
-    realtimeSession?: ImConnectOptions | LegacyRealtimeSession;
+    realtimeSession?: PcReactRealtimeConnectOptions | LegacyRealtimeSession;
 }
 export declare function createImRuntimeConfigFromEnv(envSource: PcReactEnvSource, overrides?: Partial<PcReactImTransportConfig>): Pick<PcReactImClientConfig, "baseUrl" | "timeout" | "apiKey" | "accessToken" | "tenantId" | "organizationId" | "platform" | "websocketBaseUrl">;
 export declare function createImClientConfig(overrides?: Partial<PcReactImTransportConfig>): PcReactImClientConfig;
-export declare function initImClient(overrides?: Partial<PcReactImTransportConfig>): ImSdkClient;
-export declare function getImClient(): ImSdkClient;
-export declare function initImTransportClient(overrides?: Partial<PcReactImTransportConfig>): ImSdkClient;
-export declare function getImTransportClient(): ImSdkClient;
+export declare function initImClient(overrides?: Partial<PcReactImTransportConfig>): PcReactRealtimeClient;
+export declare function getImClient(): PcReactRealtimeClient;
+export declare function initImTransportClient(overrides?: Partial<PcReactImTransportConfig>): PcReactRealtimeClient;
+export declare function getImTransportClient(): PcReactRealtimeClient;
 export declare function getImTransportClientConfig(): PcReactImClientConfig | null;
 export declare const initImBackendClient: typeof initImTransportClient;
 export declare const getImBackendClient: typeof getImTransportClient;
@@ -25,5 +24,5 @@ export declare function syncImClientSession(identity: PcImSessionIdentity, optio
 export declare function clearImClientSession(): Promise<void>;
 export declare function applyRuntimeSessionToImClient(session?: PcReactRuntimeSession): void;
 export { getImConnectionState, getImSessionIdentity, subscribeImConnectionState };
-export type { ImLiveConnection, ImLiveState };
+export type { PcReactRealtimeClient as ImLiveClient, PcReactRealtimeConnection as ImLiveConnection, PcReactRealtimeConnectOptions as ImConnectOptions };
 //# sourceMappingURL=index.d.ts.map

@@ -18,21 +18,12 @@ const mocks = vi.hoisted(() => {
     appClient,
     createAppClientMock: vi.fn(() => appClient),
     imClient,
-    imSdkConstructor: vi.fn(() => imClient)
+    imClientFactory: vi.fn(() => imClient)
   };
 });
 
 vi.mock("@sdkwork/app-sdk", () => ({
   createClient: mocks.createAppClientMock
-}));
-
-vi.mock("@sdkwork/im-sdk", () => ({
-  ImSdkClient: class {
-    constructor(...args: unknown[]) {
-      mocks.imSdkConstructor(...args);
-      return mocks.imClient;
-    }
-  }
 }));
 
 describe("core hooks", () => {
@@ -43,17 +34,18 @@ describe("core hooks", () => {
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
         VITE_ACCESS_TOKEN: "tenant-access-token"
+      },
+      imConfigOverrides: {
+        clientFactory: mocks.imClientFactory
       }
     });
   });
 
-  it("returns centralized singleton clients without requiring a provider", async () => {
-    const { useAppClient, useImClient } = await import("../src");
+  it("returns the centralized app singleton without requiring a provider", async () => {
+    const { useAppClient } = await import("../src");
 
     const app = renderHook(() => useAppClient());
-    const im = renderHook(() => useImClient());
 
     expect(app.result.current).toBe(mocks.appClient);
-    expect(im.result.current).toBe(mocks.imClient);
   });
 });

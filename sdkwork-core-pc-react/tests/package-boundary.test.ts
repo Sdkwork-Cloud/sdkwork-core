@@ -99,14 +99,96 @@ describe("@sdkwork/core-pc-react package boundary", () => {
     expect(offenders).toEqual([]);
   });
 
+  test("desktop core does not depend on the retired IM SDK runtime", () => {
+    const files = [
+      path.join(workspaceRoot, "package.json"),
+      path.join(workspaceRoot, "pnpm-workspace.yaml"),
+      path.join(packageRoot, "package.json"),
+      path.join(packageRoot, "README.md"),
+      path.join(packageRoot, "vite.config.ts"),
+      path.join(packageRoot, "vitest.config.ts"),
+      ...collectSourceFiles(sourceRoot),
+      ...collectSourceFiles(path.join(packageRoot, "tests"))
+    ];
+    const retiredPatterns = [
+      /@sdkwork\/im-sdk/u,
+      /craw-chat\/sdks\/sdkwork-im-sdk/u,
+      new RegExp(`\\bIm${"Sdk"}Client\\b`, "u")
+    ];
+    const offenders = files.flatMap((filePath) => {
+      const contents = readFileSync(filePath, "utf8");
+
+      return retiredPatterns
+        .filter((pattern) => pattern.test(contents))
+        .map((pattern) => `${path.relative(workspaceRoot, filePath)}: ${pattern.source}`);
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  test("root desktop runtime and hooks do not expose IM-specific runtime APIs", () => {
+    const rootIndexPath = path.join(packageRoot, "src", "index.ts");
+    const hooksIndexPath = path.join(packageRoot, "src", "hooks", "index.ts");
+    const runtimeIndexPath = path.join(packageRoot, "src", "runtime", "index.ts");
+    const files = [
+      rootIndexPath,
+      hooksIndexPath,
+      runtimeIndexPath
+    ];
+    const imRuntimePatterns = [
+      /["']\.\/im\/index["']/u,
+      /["']\.\.\/im\/index["']/u,
+      /\buseImClient\b/u,
+      /\bgetImClient\b/u,
+      /\bapplyRuntimeSessionToImClient\b/u,
+      /\bclearImClientSession\b/u,
+      /\bgetImConnectionState\b/u,
+      /\bsubscribeImConnectionState\b/u
+    ];
+    const offenders = files.flatMap((filePath) => {
+      const contents = readFileSync(filePath, "utf8");
+
+      return imRuntimePatterns
+        .filter((pattern) => pattern.test(contents))
+        .map((pattern) => `${path.relative(workspaceRoot, filePath)}: ${pattern.source}`);
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
+  test("desktop core metadata does not aggregate the RTC SDK", () => {
+    const rtcSdkPackage = `@sdkwork/${"rtc-sdk"}`;
+    const sdkworkRtcPath = `sdkwork-${"rtc"}`;
+    const files = [
+      path.join(workspaceRoot, "package.json"),
+      path.join(workspaceRoot, "pnpm-workspace.yaml"),
+      path.join(packageRoot, "package.json"),
+      path.join(packageRoot, "README.md"),
+      path.join(packageRoot, "vite.config.ts"),
+      path.join(packageRoot, "vitest.config.ts")
+    ];
+    const offenders = files.flatMap((filePath) => {
+      const contents = readFileSync(filePath, "utf8");
+
+      return [
+        rtcSdkPackage,
+        sdkworkRtcPath
+      ].flatMap((token) =>
+        contents.includes(token)
+          ? [`${path.relative(workspaceRoot, filePath)}: ${token}`]
+          : []
+      );
+    });
+
+    expect(offenders).toEqual([]);
+  });
+
   test("runtime SDK dependencies are portable across consumer workspaces and npm installs", () => {
     const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
       dependencies?: Record<string, string>;
     };
     const runtimeSdkDependencies = [
-      "@sdkwork/app-sdk",
-      "@sdkwork/im-sdk",
-      "@sdkwork/rtc-sdk"
+      "@sdkwork/app-sdk"
     ];
     const offenders = runtimeSdkDependencies
       .filter((dependencyName) => {

@@ -2,8 +2,6 @@ packages:
   - "sdkwork-core-pc-react"
   - "../../spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript"
   - "../../sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
-  - "../craw-chat/sdks/sdkwork-im-sdk/sdkwork-im-sdk-typescript"
-  - "../craw-chat/sdks/sdkwork-rtc-sdk/sdkwork-rtc-sdk-typescript"
 
 catalog:
   "@types/react": ^19.2.14

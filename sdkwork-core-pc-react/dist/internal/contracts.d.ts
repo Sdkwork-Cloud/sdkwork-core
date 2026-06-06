@@ -1,5 +1,5 @@
 import { SdkworkAppConfig } from '@sdkwork/app-sdk';
-import { ImTokenProvider } from '@sdkwork/im-sdk';
+import { AuthTokenManager, AuthTokens } from '@sdkwork/sdk-common';
 export type PcReactRuntimeEnv = "development" | "test" | "staging" | "production";
 export type PcReactOwnerMode = "root" | "tenant" | "organization";
 export type PcReactAuthMode = "apikey" | "dual-token";
@@ -145,6 +145,37 @@ export interface ConfigurePcReactRuntimeOptions {
     appConfigOverrides?: Partial<SdkworkAppConfig>;
     imConfigOverrides?: Partial<PcReactImTransportConfig>;
 }
+export type PcReactRealtimeTokenSnapshot = AuthTokens;
+export type PcReactRealtimeTokenProvider = AuthTokenManager;
+export interface PcReactRealtimeConnectOptions {
+    deviceId?: string;
+    url?: string;
+    headers?: Record<string, string>;
+    [key: string]: unknown;
+}
+export interface PcReactRealtimeConnection {
+    disconnect(code?: number, reason?: string): void;
+    lifecycle?: {
+        onStateChange?: (listener: (state: PcReactRealtimeState) => void) => () => void;
+    };
+    realtime?: {
+        onConnectionStateChange?: (listener: (state: string) => void) => () => void;
+    };
+    [key: string]: unknown;
+}
+export interface PcReactRealtimeClient {
+    connect(options?: PcReactRealtimeConnectOptions): PcReactRealtimeConnection | Promise<PcReactRealtimeConnection>;
+    [key: string]: unknown;
+}
+export type PcReactRealtimeClientFactory = (config: PcReactImClientConfig) => PcReactRealtimeClient;
+export type PcReactRealtimeState = {
+    status?: string;
+} | string;
+export type PcReactWebSocketFactory = (url: string | URL, protocols?: string | string[]) => WebSocket;
+export type PcReactWebSocketAuth = Record<string, string> | ((context: {
+    url?: string;
+    headers: Record<string, string>;
+}) => Record<string, string> | Promise<Record<string, string>>);
 export interface PcReactAppClientConfig extends SdkworkAppConfig {
     env: PcReactRuntimeEnv;
     ownerMode: PcReactOwnerMode;
@@ -157,10 +188,13 @@ export interface PcReactImTransportConfig {
     tenantId?: string;
     organizationId?: string;
     platform?: string;
-    tokenManager?: ImTokenProvider;
+    clientFactory?: PcReactRealtimeClientFactory;
+    tokenManager?: PcReactRealtimeTokenProvider;
     timeout?: number;
     authMode?: PcReactAuthMode;
     headers?: Record<string, string>;
+    webSocketAuth?: PcReactWebSocketAuth;
+    webSocketFactory?: PcReactWebSocketFactory;
     websocketBaseUrl?: string;
 }
 export interface PcReactImClientConfig extends PcReactImTransportConfig {

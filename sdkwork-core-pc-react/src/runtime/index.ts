@@ -1,10 +1,8 @@
 import type { ConfigurePcReactRuntimeOptions, PcReactRuntimeSession } from "../internal/contracts";
 import { applyRuntimeSessionToAppClient } from "../app/index";
-import { applyRuntimeSessionToImClient, clearImClientSession } from "../im/index";
 import {
   clearStoredPcReactRuntimeSession,
   configureRuntime,
-  getImConnectionState,
   getPcReactEnv,
   getPcReactRuntimeVersion,
   persistPcReactRuntimeSession as persistStoredPcReactRuntimeSession,
@@ -12,7 +10,6 @@ import {
   resetRuntime,
   SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY,
-  subscribeImConnectionState,
   subscribePcReactRuntime
 } from "../internal/runtimeState";
 
@@ -27,7 +24,6 @@ export function resetPcReactRuntime(options: { clearStorage?: boolean; clearConf
 export function persistRuntimeSession(session: PcReactRuntimeSession): PcReactRuntimeSession {
   const nextSession = persistStoredPcReactRuntimeSession(session);
   applyRuntimeSessionToAppClient(nextSession);
-  applyRuntimeSessionToImClient(nextSession);
   return nextSession;
 }
 
@@ -39,10 +35,9 @@ export function readRuntimeSession(): PcReactRuntimeSession {
 
 export const readPcReactRuntimeSession = readRuntimeSession;
 
-export async function clearPcReactRuntimeSession(): Promise<void> {
+export function clearPcReactRuntimeSession(): void {
   clearStoredPcReactRuntimeSession();
   applyRuntimeSessionToAppClient(readStoredPcReactRuntimeSession());
-  await clearImClientSession();
 }
 
 export const SDKWORK_PC_REACT_LEGACY_STORAGE_KEYS = {
@@ -57,11 +52,9 @@ export {
 } from "./shell-bridge";
 
 export {
-  getImConnectionState,
   getPcReactEnv,
   getPcReactRuntimeVersion,
   SDKWORK_PC_REACT_LEGACY_AUTH_TOKEN_STORAGE_KEY,
   SDKWORK_PC_REACT_LEGACY_REFRESH_TOKEN_STORAGE_KEY,
-  subscribeImConnectionState,
   subscribePcReactRuntime
 };

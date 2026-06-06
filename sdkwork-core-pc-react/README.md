@@ -7,10 +7,9 @@ It centralizes:
 - Vite env parsing
 - owner-scoped `baseUrl` and `accessToken` resolution
 - app sdk bootstrap
-- IM backend sdk + realtime sdk bootstrap
 - dual-token and api-key auth mode handling
 - shell preference persistence for theme selection, theme color, locale preference, and resolved locale
-- standard `useAppClient` and `useImClient` hooks
+- standard `useAppClient` hook
 - standard `usePcReactShellPreferences` and `usePcReactResolvedShellPreferences` hooks
 - runtime session persistence
 - legacy desktop auth/refresh/session storage migration
@@ -34,12 +33,10 @@ One package owns five concerns:
 
 3. Clients
    - provides one shared app sdk client
-   - provides one shared IM backend client + composed IM runtime
-   - applies runtime session changes to both clients after login, refresh, and logout
+   - applies runtime session changes to the app client after login, refresh, and logout
 
 4. Hooks
    - `useAppClient()`
-   - `useImClient()`
    - `usePcReactEnv()`
    - `usePcReactRuntimeSession()`
    - `usePcReactShellPreferences()`
@@ -59,9 +56,7 @@ import {
   configurePcReactRuntime,
   persistPcReactRuntimeSession,
   persistPcReactShellPreferences,
-  syncImClientSession,
   useAppClient,
-  useImClient,
   usePcReactResolvedShellPreferences,
 } from "@sdkwork/core-pc-react";
 
@@ -80,8 +75,8 @@ configurePcReactRuntime({
   },
   headersResolver: ({ target }) => ({
     "Accept-Language": getAppLanguage(),
-    "X-SDK-Client": target === "im" ? "desktop-im" : "desktop-app"
-  })
+    "X-SDK-Client": target === "app" ? "desktop-app" : "desktop-runtime"
+  }
 });
 
 persistPcReactRuntimeSession({
@@ -96,18 +91,13 @@ persistPcReactShellPreferences({
   themeSelection: "dark"
 });
 
-await syncImClientSession({
-  userId: "1001",
-  username: "neo",
-  displayName: "Neo",
-  authToken: "user-auth-token",
-  accessToken: "tenant-access-token"
-});
-
 const appClient = useAppClient();
-const imClient = useImClient();
 const shellPreferences = usePcReactResolvedShellPreferences();
 ```
+
+IM migration helpers are available only through the explicit subpath `@sdkwork/core-pc-react/im`.
+The package root does not expose IM or RTC runtime APIs, so appbase consumers can use the
+desktop foundation without pulling messaging or audio/video dependencies into their dependency graph.
 
 ## Env standard
 

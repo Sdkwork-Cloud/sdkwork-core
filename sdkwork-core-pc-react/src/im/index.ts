@@ -1,5 +1,3 @@
-import { ImSdkClient } from "@sdkwork/im-sdk";
-import type { ImSdkClientOptions } from "@sdkwork/im-sdk";
 import { createPcReactEnvConfig } from "../env/index";
 import { applyRuntimeSessionToAppClient } from "../app/index";
 import type {
@@ -47,6 +45,9 @@ export interface SyncImClientSessionOptions {
 }
 
 let activeImLiveConnection: PcReactRealtimeConnection | null = null;
+
+const MISSING_IM_REALTIME_CLIENT_FACTORY_MESSAGE =
+  "IM realtime clientFactory is required after messaging runtime extraction";
 
 function createPcReactImTokenProvider(initialTokens: Partial<PcReactRealtimeTokenSnapshot> = {}): PcReactRealtimeTokenProvider {
   let tokens: PcReactRealtimeTokenSnapshot = {
@@ -149,15 +150,8 @@ function applySessionTokensToImRuntime(
   session: PcReactRuntimeSession,
   fallbackAccessToken: string
 ): void {
+  void runtime;
   applySessionTokensToTokenProvider(config.tokenManager, session, fallbackAccessToken);
-
-  const normalizedAuthToken = normalizeBearerToken(session.authToken || config.authToken || config.apiKey);
-  if (normalizedAuthToken) {
-    runtime.auth.useToken(normalizedAuthToken);
-    return;
-  }
-
-  runtime.auth.clearToken();
 }
 
 function createImSessionBridgeConfig(overrides: Partial<PcReactImTransportConfig> = {}): PcReactImClientConfig {
@@ -224,6 +218,7 @@ function createResolvedImClientConfig(
     tenantId: (mergedOverrides.tenantId ?? env.owner.tenantId) || undefined,
     organizationId: (mergedOverrides.organizationId ?? env.owner.organizationId) || undefined,
     platform: mergedOverrides.platform ?? env.platform.id,
+    clientFactory: mergedOverrides.clientFactory,
     tokenManager,
     authMode: resolveAuthMode(
       resolvedApiKey,
@@ -231,6 +226,8 @@ function createResolvedImClientConfig(
       resolvedAuthToken,
       mergedOverrides.authMode
     ),
+    webSocketAuth: mergedOverrides.webSocketAuth,
+    webSocketFactory: mergedOverrides.webSocketFactory,
     websocketBaseUrl: mergedOverrides.websocketBaseUrl || env.realtime.imWsUrl || undefined,
     headers: {
       ...resolveRuntimeHeaders("im", {
@@ -243,27 +240,20 @@ function createResolvedImClientConfig(
   };
 }
 
-function createImSdkClient(config: PcReactImClientConfig): PcReactRealtimeClient {
+function createMissingRealtimeClient(): PcReactRealtimeClient {
+  return {
+    async connect(): Promise<PcReactRealtimeConnection> {
+      throw new Error(MISSING_IM_REALTIME_CLIENT_FACTORY_MESSAGE);
+    }
+  };
+}
+
+function createImRuntimeClient(config: PcReactImClientConfig): PcReactRealtimeClient {
   if (config.clientFactory) {
     return config.clientFactory(config);
   }
 
-  const options = {
-    baseUrl: config.baseUrl,
-    apiBaseUrl: config.baseUrl,
-    websocketBaseUrl: config.websocketBaseUrl,
-    authToken: normalizeBearerToken(config.authToken || config.apiKey),
-    tokenProvider: config.tokenManager,
-    webSocketAuth: config.webSocketAuth,
-    webSocketFactory: config.webSocketFactory,
-    timeout: config.timeout,
-    headers: config.headers
-  } as ImSdkClientOptions & {
-    headers?: Record<string, string>;
-    timeout?: number;
-  };
-
-  return new ImSdkClient(options);
+  return createMissingRealtimeClient();
 }
 
 function normalizeRealtimeConnectOptions(
@@ -276,7 +266,7 @@ function normalizeRealtimeConnectOptions(
     };
   }
 
-  if ("wsUrl" in realtimeSession || "token" in realtimeSession || "uid" in realtimeSession) {
+  if (isLegacyRealtimeSession(realtimeSession)) {
     const headers = realtimeSession.token
       ? {
           Authorization: `Bearer ${normalizeBearerToken(realtimeSession.token)}`
@@ -291,6 +281,12 @@ function normalizeRealtimeConnectOptions(
   }
 
   return realtimeSession;
+}
+
+function isLegacyRealtimeSession(
+  realtimeSession: PcReactRealtimeConnectOptions | LegacyRealtimeSession
+): realtimeSession is LegacyRealtimeSession {
+  return "wsUrl" in realtimeSession || "token" in realtimeSession || "uid" in realtimeSession;
 }
 
 export function createImRuntimeConfigFromEnv(
@@ -338,7 +334,7 @@ export function initImClient(overrides: Partial<PcReactImTransportConfig> = {}):
     ...createImTransportClientConfig(overrides),
     tokenManager: config.tokenManager
   };
-  const runtime = createImSdkClient(config);
+  const runtime = createImRuntimeClient(config);
   applySessionTokensToImRuntime(runtime, cachedConfig, readPcReactRuntimeSession(), cachedConfig.accessToken || "");
   setImTransportClientCache(runtime, cachedConfig);
   setImClientCache(runtime);
@@ -362,7 +358,7 @@ export function initImTransportClient(overrides: Partial<PcReactImTransportConfi
   }
 
   const config = createImTransportClientConfig(overrides);
-  const runtime = createImSdkClient(config);
+  const runtime = createImRuntimeClient(config);
   applySessionTokensToImRuntime(runtime, config, resolveEffectiveClientSession(overrides, config.accessToken || ""), config.accessToken || "");
   setImTransportClientCache(runtime, config);
   setImClientCache(runtime);

@@ -18,21 +18,12 @@ const mocks = vi.hoisted(() => {
     appClient,
     createAppClientMock: vi.fn(() => appClient),
     imClient,
-    imSdkConstructor: vi.fn(() => imClient),
+    imClientFactory: vi.fn(() => imClient),
   };
 });
 
 vi.mock("@sdkwork/app-sdk", () => ({
   createClient: mocks.createAppClientMock,
-}));
-
-vi.mock("@sdkwork/im-sdk", () => ({
-  ImSdkClient: class {
-    constructor(...args: unknown[]) {
-      mocks.imSdkConstructor(...args);
-      return mocks.imClient;
-    }
-  },
 }));
 
 describe("shell preference hooks", () => {
@@ -51,30 +42,27 @@ describe("shell preference hooks", () => {
           themeSelection: "system",
         },
       },
+      imConfigOverrides: {
+        clientFactory: mocks.imClientFactory,
+      },
     });
   });
 
-  it("rerenders preference hooks without recreating app or im clients", async () => {
+  it("rerenders preference hooks without recreating the app client", async () => {
     const {
       persistPcReactShellPreferences,
       useAppClient,
-      useImClient,
       usePcReactResolvedShellPreferences,
       usePcReactShellPreferences,
     } = await import("../src");
 
     let appRenderCount = 0;
-    let imRenderCount = 0;
     let preferenceRenderCount = 0;
     let resolvedPreferenceRenderCount = 0;
 
     const appHook = renderHook(() => {
       appRenderCount += 1;
       return useAppClient();
-    });
-    const imHook = renderHook(() => {
-      imRenderCount += 1;
-      return useImClient();
     });
     const preferenceHook = renderHook(() => {
       preferenceRenderCount += 1;
@@ -86,7 +74,6 @@ describe("shell preference hooks", () => {
     });
 
     const baselineAppRenderCount = appRenderCount;
-    const baselineImRenderCount = imRenderCount;
     const baselinePreferenceRenderCount = preferenceRenderCount;
     const baselineResolvedPreferenceRenderCount = resolvedPreferenceRenderCount;
 
@@ -115,10 +102,8 @@ describe("shell preference hooks", () => {
     expect(preferenceRenderCount).toBeGreaterThan(baselinePreferenceRenderCount);
     expect(resolvedPreferenceRenderCount).toBeGreaterThan(baselineResolvedPreferenceRenderCount);
     expect(appRenderCount).toBe(baselineAppRenderCount);
-    expect(imRenderCount).toBe(baselineImRenderCount);
     expect(appHook.result.current).toBe(mocks.appClient);
-    expect(imHook.result.current).toBe(mocks.imClient);
     expect(mocks.createAppClientMock).toHaveBeenCalledTimes(1);
-    expect(mocks.imSdkConstructor).toHaveBeenCalledTimes(1);
+    expect(mocks.imClientFactory).not.toHaveBeenCalled();
   });
 });

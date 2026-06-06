@@ -1,12 +1,5 @@
 import type { SdkworkAppConfig } from "@sdkwork/app-sdk";
-import type {
-  ImConnectOptions,
-  ImLiveConnection,
-  ImLiveState,
-  ImSdkClient,
-  ImSdkClientOptions,
-  ImTokenProvider,
-} from "@sdkwork/im-sdk";
+import type { AuthTokenManager, AuthTokens } from "@sdkwork/sdk-common";
 
 export type PcReactRuntimeEnv = "development" | "test" | "staging" | "production";
 
@@ -185,19 +178,42 @@ export interface ConfigurePcReactRuntimeOptions {
   imConfigOverrides?: Partial<PcReactImTransportConfig>;
 }
 
-export type PcReactRealtimeTokenSnapshot = ReturnType<ImTokenProvider["getTokens"]>;
+export type PcReactRealtimeTokenSnapshot = AuthTokens;
 
-export type PcReactRealtimeTokenProvider = ImTokenProvider;
+export type PcReactRealtimeTokenProvider = AuthTokenManager;
 
-export type PcReactRealtimeConnectOptions = ImConnectOptions;
+export interface PcReactRealtimeConnectOptions {
+  deviceId?: string;
+  url?: string;
+  headers?: Record<string, string>;
+  [key: string]: unknown;
+}
 
-export type PcReactRealtimeConnection = ImLiveConnection;
+export interface PcReactRealtimeConnection {
+  disconnect(code?: number, reason?: string): void;
+  lifecycle?: {
+    onStateChange?: (listener: (state: PcReactRealtimeState) => void) => () => void;
+  };
+  realtime?: {
+    onConnectionStateChange?: (listener: (state: string) => void) => () => void;
+  };
+  [key: string]: unknown;
+}
 
-export type PcReactRealtimeClient = Pick<ImSdkClient, "auth" | "connect">;
+export interface PcReactRealtimeClient {
+  connect(options?: PcReactRealtimeConnectOptions): PcReactRealtimeConnection | Promise<PcReactRealtimeConnection>;
+  [key: string]: unknown;
+}
 
 export type PcReactRealtimeClientFactory = (config: PcReactImClientConfig) => PcReactRealtimeClient;
 
-export type PcReactRealtimeState = ImLiveState | { status?: string } | string;
+export type PcReactRealtimeState = { status?: string } | string;
+
+export type PcReactWebSocketFactory = (url: string | URL, protocols?: string | string[]) => WebSocket;
+
+export type PcReactWebSocketAuth =
+  | Record<string, string>
+  | ((context: { url?: string; headers: Record<string, string> }) => Record<string, string> | Promise<Record<string, string>>);
 
 export interface PcReactAppClientConfig extends SdkworkAppConfig {
   env: PcReactRuntimeEnv;
@@ -217,8 +233,8 @@ export interface PcReactImTransportConfig {
   timeout?: number;
   authMode?: PcReactAuthMode;
   headers?: Record<string, string>;
-  webSocketAuth?: ImSdkClientOptions["webSocketAuth"];
-  webSocketFactory?: ImSdkClientOptions["webSocketFactory"];
+  webSocketAuth?: PcReactWebSocketAuth;
+  webSocketFactory?: PcReactWebSocketFactory;
   websocketBaseUrl?: string;
 }
 

@@ -1,6 +1,5 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { getAppClientWithSession } from "../app/index";
-import { getImClient } from "../im/index";
 import {
   getPcReactShellPreferencesVersion,
   readPcReactShellPreferences,
@@ -30,11 +29,6 @@ function usePreferenceSubscription(): void {
 export function useAppClient() {
   useRuntimeSubscription();
   return getAppClientWithSession();
-}
-
-export function useImClient() {
-  useRuntimeSubscription();
-  return getImClient();
 }
 
 export function usePcReactEnv() {

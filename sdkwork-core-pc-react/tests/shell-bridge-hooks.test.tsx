@@ -18,21 +18,12 @@ const mocks = vi.hoisted(() => {
     appClient,
     createAppClientMock: vi.fn(() => appClient),
     imClient,
-    imSdkConstructor: vi.fn(() => imClient),
+    imClientFactory: vi.fn(() => imClient),
   };
 });
 
 vi.mock("@sdkwork/app-sdk", () => ({
   createClient: mocks.createAppClientMock,
-}));
-
-vi.mock("@sdkwork/im-sdk", () => ({
-  ImSdkClient: class {
-    constructor(...args: unknown[]) {
-      mocks.imSdkConstructor(...args);
-      return mocks.imClient;
-    }
-  },
 }));
 
 describe("shell bridge hook", () => {
@@ -51,28 +42,25 @@ describe("shell bridge hook", () => {
           themeSelection: "system",
         },
       },
+      imConfigOverrides: {
+        clientFactory: mocks.imClientFactory,
+      },
     });
   });
 
-  it("rerenders the bridge for preference and session updates without recreating singleton clients", async () => {
+  it("rerenders the bridge for preference and session updates without recreating the app singleton", async () => {
     const coreModule = await import("../src");
     const persistPcReactRuntimeSession = (coreModule as Record<string, any>).persistPcReactRuntimeSession;
     const persistPcReactShellPreferences = (coreModule as Record<string, any>).persistPcReactShellPreferences;
     const useAppClient = (coreModule as Record<string, any>).useAppClient;
-    const useImClient = (coreModule as Record<string, any>).useImClient;
     const usePcReactShellBridgeValue = (coreModule as Record<string, any>).usePcReactShellBridgeValue;
 
     let appRenderCount = 0;
     let bridgeRenderCount = 0;
-    let imRenderCount = 0;
 
     const appHook = renderHook(() => {
       appRenderCount += 1;
       return useAppClient();
-    });
-    const imHook = renderHook(() => {
-      imRenderCount += 1;
-      return useImClient();
     });
     const bridgeHook = renderHook(() => {
       bridgeRenderCount += 1;
@@ -81,7 +69,6 @@ describe("shell bridge hook", () => {
 
     const baselineAppRenderCount = appRenderCount;
     const baselineBridgeRenderCount = bridgeRenderCount;
-    const baselineImRenderCount = imRenderCount;
 
     act(() => {
       persistPcReactShellPreferences({
@@ -100,7 +87,6 @@ describe("shell bridge hook", () => {
     expect(bridgeHook.result.current.dir).toBe("rtl");
     expect(bridgeRenderCount).toBeGreaterThan(baselineBridgeRenderCount);
     expect(appRenderCount).toBe(baselineAppRenderCount);
-    expect(imRenderCount).toBe(baselineImRenderCount);
 
     act(() => {
       persistPcReactRuntimeSession({
@@ -115,8 +101,7 @@ describe("shell bridge hook", () => {
     });
     expect(bridgeRenderCount).toBeGreaterThan(baselineBridgeRenderCount);
     expect(appHook.result.current).toBe(mocks.appClient);
-    expect(imHook.result.current).toBe(mocks.imClient);
     expect(mocks.createAppClientMock).toHaveBeenCalledTimes(1);
-    expect(mocks.imSdkConstructor).toHaveBeenCalledTimes(1);
+    expect(mocks.imClientFactory).not.toHaveBeenCalled();
   });
 });
