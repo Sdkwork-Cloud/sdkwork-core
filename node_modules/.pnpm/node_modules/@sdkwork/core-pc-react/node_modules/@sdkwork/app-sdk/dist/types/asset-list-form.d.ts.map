@@ -1,0 +1,1 @@
+{"version":3,"file":"asset-list-form.d.ts","sourceRoot":"","sources":["../../src/types/asset-list-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}

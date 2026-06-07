@@ -1,0 +1,1 @@
+{"version":3,"file":"audit-result-item.d.ts","sourceRoot":"","sources":["../../src/types/audit-result-item.ts"],"names":[],"mappings":"AAAA,YAAY;AACZ,MAAM,WAAW,eAAe;IAC9B,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,SAAS;IACT,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

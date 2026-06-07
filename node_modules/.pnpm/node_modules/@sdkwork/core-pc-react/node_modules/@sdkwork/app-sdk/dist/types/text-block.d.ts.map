@@ -1,0 +1,1 @@
+{"version":3,"file":"text-block.d.ts","sourceRoot":"","sources":["../../src/types/text-block.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,UAAU,CAAC;AAEvC,UAAU;AACV,MAAM,WAAW,SAAS;IACxB,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW;IACX,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

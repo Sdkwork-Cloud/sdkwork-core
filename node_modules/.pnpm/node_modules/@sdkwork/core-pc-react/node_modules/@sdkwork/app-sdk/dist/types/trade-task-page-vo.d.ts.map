@@ -1,0 +1,1 @@
+{"version":3,"file":"trade-task-page-vo.d.ts","sourceRoot":"","sources":["../../src/types/trade-task-page-vo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAEnD,MAAM,WAAW,eAAe;IAC9B,KAAK,CAAC,EAAE,WAAW,EAAE,CAAC;IACtB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}

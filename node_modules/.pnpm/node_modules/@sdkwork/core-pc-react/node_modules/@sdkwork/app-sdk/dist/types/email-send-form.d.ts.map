@@ -1,0 +1,1 @@
+{"version":3,"file":"email-send-form.d.ts","sourceRoot":"","sources":["../../src/types/email-send-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,EAAE,EAAE,MAAM,EAAE,CAAC;IACb,EAAE,CAAC,EAAE,MAAM,EAAE,CAAC;IACd,GAAG,CAAC,EAAE,MAAM,EAAE,CAAC;IACf,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,MAAM,CAAC;IAChB,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"batch-event-track-form.d.ts","sourceRoot":"","sources":["../../src/types/batch-event-track-form.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,oBAAoB,CAAC;AAEzD,MAAM,WAAW,mBAAmB;IAClC,MAAM,EAAE,cAAc,EAAE,CAAC;IACzB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"claw-login-form.d.ts","sourceRoot":"","sources":["../../src/types/claw-login-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,qBAAqB;IACrB,QAAQ,EAAE,MAAM,CAAC;IACjB,qBAAqB;IACrB,QAAQ,EAAE,MAAM,CAAC;IACjB,gBAAgB;IAChB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,gFAAgF;IAChF,aAAa,CAAC,EAAE,MAAM,CAAC;IACvB,mBAAmB;IACnB,UAAU,CAAC,EAAE,OAAO,CAAC;CACtB"}

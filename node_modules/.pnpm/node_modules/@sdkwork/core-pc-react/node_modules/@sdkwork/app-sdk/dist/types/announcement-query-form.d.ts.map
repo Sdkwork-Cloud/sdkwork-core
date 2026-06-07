@@ -1,0 +1,1 @@
+{"version":3,"file":"announcement-query-form.d.ts","sourceRoot":"","sources":["../../src/types/announcement-query-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}

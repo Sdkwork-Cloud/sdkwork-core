@@ -1,0 +1,1 @@
+{"version":3,"file":"vote-form.d.ts","sourceRoot":"","sources":["../../src/types/vote-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,QAAQ;IACvB,WAAW,EAAE,MAAM,CAAC;IACpB,SAAS,EAAE,MAAM,CAAC;IAClB,MAAM,EAAE,MAAM,CAAC;IACf,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

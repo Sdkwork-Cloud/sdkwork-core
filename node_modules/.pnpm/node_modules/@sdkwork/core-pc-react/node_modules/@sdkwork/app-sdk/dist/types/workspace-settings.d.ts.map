@@ -1,0 +1,1 @@
+{"version":3,"file":"workspace-settings.d.ts","sourceRoot":"","sources":["../../src/types/workspace-settings.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,QAAQ,CAAC,EAAE,OAAO,CAAC;IACnB,WAAW,CAAC,EAAE,OAAO,CAAC;IACtB,kBAAkB,CAAC,EAAE,OAAO,CAAC;IAC7B,eAAe,CAAC,EAAE,OAAO,CAAC;CAC3B"}

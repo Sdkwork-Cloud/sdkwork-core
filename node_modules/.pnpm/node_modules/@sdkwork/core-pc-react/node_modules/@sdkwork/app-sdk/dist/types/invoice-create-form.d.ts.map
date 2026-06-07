@@ -1,0 +1,1 @@
+{"version":3,"file":"invoice-create-form.d.ts","sourceRoot":"","sources":["../../src/types/invoice-create-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,KAAK,EAAE,MAAM,CAAC;IACd,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

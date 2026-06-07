@@ -1,0 +1,1 @@
+{"version":3,"file":"behavior-risk-check-form.d.ts","sourceRoot":"","sources":["../../src/types/behavior-risk-check-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,qBAAqB;IACpC,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,OAAO,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,CAAC;IAClC,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

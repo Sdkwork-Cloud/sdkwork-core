@@ -1,0 +1,1 @@
+{"version":3,"file":"document-batch-update-request.d.ts","sourceRoot":"","sources":["../../src/types/document-batch-update-request.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,6BAA6B,EAAE,MAAM,oCAAoC,CAAC;AAExF,MAAM,WAAW,0BAA0B;IACzC,QAAQ,EAAE,6BAA6B,EAAE,CAAC;IAC1C,MAAM,CAAC,EAAE,OAAO,CAAC;CAClB"}

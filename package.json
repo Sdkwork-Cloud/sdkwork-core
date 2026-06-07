@@ -4,7 +4,6 @@
   "packageManager": "pnpm@10.30.3",
   "pnpm": {
     "overrides": {
-      "@sdkwork/app-sdk": "workspace:*",
       "@sdkwork/sdk-common": "workspace:*"
     }
   },

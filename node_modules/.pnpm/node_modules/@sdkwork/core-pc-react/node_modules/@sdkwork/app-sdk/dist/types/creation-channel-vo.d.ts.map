@@ -1,0 +1,1 @@
+{"version":3,"file":"creation-channel-vo.d.ts","sourceRoot":"","sources":["../../src/types/creation-channel-vo.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,qBAAqB,CAAC;AAE3D,wBAAwB;AACxB,MAAM,WAAW,iBAAiB;IAChC,oBAAoB;IACpB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,oBAAoB;IACpB,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,cAAc;IACd,MAAM,CAAC,EAAE,eAAe,EAAE,CAAC;CAC5B"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"order-address-vo.d.ts","sourceRoot":"","sources":["../../src/types/order-address-vo.ts"],"names":[],"mappings":"AAAA,oBAAoB;AACpB,MAAM,WAAW,cAAc;IAC7B,gBAAgB;IAChB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,mBAAmB;IACnB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,cAAc;IACd,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"oauth-url-vo.d.ts","sourceRoot":"","sources":["../../src/types/oauth-url-vo.ts"],"names":[],"mappings":"AAAA,mBAAmB;AACnB,MAAM,WAAW,UAAU;IACzB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,WAAW;IACX,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,cAAc;IACd,OAAO,CAAC,EAAE,MAAM,CAAC;CAClB"}

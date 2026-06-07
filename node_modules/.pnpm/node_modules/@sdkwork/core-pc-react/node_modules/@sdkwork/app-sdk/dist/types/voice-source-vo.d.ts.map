@@ -1,0 +1,1 @@
+{"version":3,"file":"voice-source-vo.d.ts","sourceRoot":"","sources":["../../src/types/voice-source-vo.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,aAAa;IAC5B,WAAW;IACX,EAAE,CAAC,EAAE,MAAM,CAAC;IACZ,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,SAAS;IACT,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

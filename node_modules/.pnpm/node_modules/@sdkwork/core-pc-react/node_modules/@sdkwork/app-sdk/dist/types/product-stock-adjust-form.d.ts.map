@@ -1,0 +1,1 @@
+{"version":3,"file":"product-stock-adjust-form.d.ts","sourceRoot":"","sources":["../../src/types/product-stock-adjust-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,sBAAsB;IACrC,UAAU,EAAE,UAAU,GAAG,UAAU,GAAG,YAAY,CAAC;IACnD,QAAQ,EAAE,MAAM,CAAC;IACjB,MAAM,EAAE,MAAM,CAAC;IACf,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}

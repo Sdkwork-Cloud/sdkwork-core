@@ -1,0 +1,1 @@
+{"version":3,"file":"favorite-add-form.d.ts","sourceRoot":"","sources":["../../src/types/favorite-add-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,eAAe;IAC9B,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,mBAAmB,CAAC,EAAE,MAAM,CAAC;IAC7B,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,IAAI,CAAC,EAAE,MAAM,CAAC;CACf"}

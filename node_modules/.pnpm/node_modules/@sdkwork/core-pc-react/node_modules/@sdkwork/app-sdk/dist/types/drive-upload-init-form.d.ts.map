@@ -1,0 +1,1 @@
+{"version":3,"file":"drive-upload-init-form.d.ts","sourceRoot":"","sources":["../../src/types/drive-upload-init-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,mBAAmB;IAClC,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,MAAM,CAAC;IACb,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,cAAc,CAAC,EAAE,QAAQ,GAAG,WAAW,GAAG,QAAQ,CAAC;IACnD,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB"}

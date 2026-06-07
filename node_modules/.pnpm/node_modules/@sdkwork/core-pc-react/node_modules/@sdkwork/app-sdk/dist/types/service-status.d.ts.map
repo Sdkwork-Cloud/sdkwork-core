@@ -1,0 +1,1 @@
+{"version":3,"file":"service-status.d.ts","sourceRoot":"","sources":["../../src/types/service-status.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,aAAa;IAC5B,cAAc;IACd,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,cAAc;IACd,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,aAAa;IACb,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,aAAa;IACb,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,cAAc;IACd,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

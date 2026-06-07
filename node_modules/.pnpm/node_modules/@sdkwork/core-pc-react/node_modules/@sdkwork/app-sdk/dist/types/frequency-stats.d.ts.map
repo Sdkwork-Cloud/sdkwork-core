@@ -1,0 +1,1 @@
+{"version":3,"file":"frequency-stats.d.ts","sourceRoot":"","sources":["../../src/types/frequency-stats.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,cAAc;IAC7B,iBAAiB;IACjB,gBAAgB,CAAC,EAAE,MAAM,CAAC;IAC1B,WAAW;IACX,YAAY,CAAC,EAAE,MAAM,CAAC;IACtB,WAAW;IACX,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,WAAW;IACX,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

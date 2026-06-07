@@ -1,0 +1,1 @@
+{"version":3,"file":"timestamped-segment.d.ts","sourceRoot":"","sources":["../../src/types/timestamped-segment.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,kBAAkB;IACjC,eAAe;IACf,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,eAAe;IACf,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,WAAW;IACX,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,YAAY;IACZ,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,UAAU;IACV,UAAU,CAAC,EAAE,MAAM,CAAC;CACrB"}

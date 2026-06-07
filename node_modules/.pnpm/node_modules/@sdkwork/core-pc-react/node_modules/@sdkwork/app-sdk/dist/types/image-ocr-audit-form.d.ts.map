@@ -1,0 +1,1 @@
+{"version":3,"file":"image-ocr-audit-form.d.ts","sourceRoot":"","sources":["../../src/types/image-ocr-audit-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,iBAAiB;IAChC,QAAQ,EAAE,MAAM,CAAC;IACjB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,UAAU,CAAC,EAAE,MAAM,EAAE,CAAC;IACtB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,cAAc,CAAC,EAAE,OAAO,CAAC;CAC1B"}

@@ -1,7 +1,6 @@
 packages:
   - "sdkwork-core-pc-react"
-  - "../../spring-ai-plus-app-api/sdkwork-sdk-app/sdkwork-app-sdk-typescript"
-  - "../../sdk/sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
+  - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
 
 catalog:
   "@types/react": ^19.2.14

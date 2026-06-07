@@ -1,0 +1,1 @@
+{"version":3,"file":"replacement-position.d.ts","sourceRoot":"","sources":["../../src/types/replacement-position.ts"],"names":[],"mappings":"AAAA,WAAW;AACX,MAAM,WAAW,mBAAmB;IAClC,WAAW;IACX,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,WAAW;IACX,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,UAAU;IACV,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,UAAU;IACV,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB"}

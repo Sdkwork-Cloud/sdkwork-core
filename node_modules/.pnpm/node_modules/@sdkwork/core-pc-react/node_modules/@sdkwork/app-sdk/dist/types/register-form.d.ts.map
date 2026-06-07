@@ -1,0 +1,1 @@
+{"version":3,"file":"register-form.d.ts","sourceRoot":"","sources":["../../src/types/register-form.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,YAAY;IAC3B,QAAQ,EAAE,MAAM,CAAC;IACjB,QAAQ,EAAE,MAAM,CAAC;IACjB,eAAe,EAAE,MAAM,CAAC;IACxB,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,IAAI,CAAC,EAAE,SAAS,GAAG,OAAO,GAAG,OAAO,CAAC;IACrC,gBAAgB,CAAC,EAAE,MAAM,CAAC;CAC3B"}
