@@ -8,3 +8,5 @@
 .env.postgres
 .env.release.local
 config/*.local.toml
+node_modules/
+**/node_modules/
