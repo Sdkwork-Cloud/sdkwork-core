@@ -1,7 +1,0 @@
-export declare function useAppClient(): import('..').SdkworkAppClient;
-export declare function usePcReactEnv(): import('../internal/contracts').PcReactEnvConfig;
-export declare function usePcReactRuntimeSession(): import('../internal/contracts').PcReactRuntimeSession;
-export declare function usePcReactShellPreferences(): import('..').PcReactShellPreferences;
-export declare function usePcReactResolvedShellPreferences(): import('..').PcReactResolvedShellPreferences;
-export declare function usePcReactShellBridgeValue(): import('../internal/contracts').PcReactShellBridgeValue;
-//# sourceMappingURL=index.d.ts.map
