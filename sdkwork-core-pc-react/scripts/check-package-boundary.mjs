@@ -108,7 +108,7 @@ const retiredImSdkReferenceFiles = [
 ];
 const retiredImSdkPatterns = [
   /@sdkwork\/im-sdk/u,
-  /craw-chat\/sdks\/sdkwork-im-sdk/u,
+  /sdkwork-im\/sdks\/sdkwork-im-sdk/u,
   new RegExp(`\\bIm${"Sdk"}Client\\b`, "u"),
 ];
 const retiredImSdkOffenders = retiredImSdkReferenceFiles.flatMap((filePath) => {
