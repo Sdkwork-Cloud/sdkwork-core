@@ -7,6 +7,7 @@ import type {
   SdkworkAppConfig
 } from "../internal/contracts";
 import { normalizeBearerToken, resolveAuthMode } from "../internal/helpers";
+import { resolveDualTokenIdentityClaims } from "../internal/jwtClaims";
 import {
   getAppClientCache,
   getAppClientConfigCache,
@@ -125,6 +126,7 @@ function createResolvedAppClientConfig(
   );
   const resolvedApiKey = (mergedOverrides.apiKey || env.auth.apiKey || "").trim();
   const resolvedAuthToken = normalizeBearerToken(mergedOverrides.authToken || session?.authToken);
+  const identityClaims = resolveDualTokenIdentityClaims(resolvedAccessToken, resolvedAuthToken);
 
   return {
     env: env.appEnv,
@@ -134,8 +136,11 @@ function createResolvedAppClientConfig(
     apiKey: resolvedApiKey || undefined,
     accessToken: resolvedAccessToken || undefined,
     authToken: resolvedAuthToken || undefined,
-    tenantId: (mergedOverrides.tenantId ?? env.owner.tenantId) || undefined,
-    organizationId: (mergedOverrides.organizationId ?? env.owner.organizationId) || undefined,
+    tenantId: mergedOverrides.tenantId ?? identityClaims.tenantId ?? undefined,
+    organizationId:
+      mergedOverrides.organizationId
+      ?? identityClaims.organizationId
+      ?? undefined,
     platform: mergedOverrides.platform ?? env.platform.id,
     tokenManager: mergedOverrides.tokenManager,
     authMode: resolveAuthMode(
@@ -162,6 +167,7 @@ function createAppClientConfigFromResolvedEnv(
   const resolvedAccessToken = normalizeBearerToken(overrides.accessToken || env.auth.accessToken);
   const resolvedApiKey = (overrides.apiKey || env.auth.apiKey || "").trim();
   const resolvedAuthToken = normalizeBearerToken(overrides.authToken);
+  const identityClaims = resolveDualTokenIdentityClaims(resolvedAccessToken, resolvedAuthToken);
 
   return {
     env: env.appEnv,
@@ -171,8 +177,11 @@ function createAppClientConfigFromResolvedEnv(
     apiKey: resolvedApiKey || undefined,
     accessToken: resolvedAccessToken || undefined,
     authToken: resolvedAuthToken || undefined,
-    tenantId: (overrides.tenantId ?? env.owner.tenantId) || undefined,
-    organizationId: (overrides.organizationId ?? env.owner.organizationId) || undefined,
+    tenantId: overrides.tenantId ?? identityClaims.tenantId ?? undefined,
+    organizationId:
+      overrides.organizationId
+      ?? identityClaims.organizationId
+      ?? undefined,
     platform: overrides.platform ?? env.platform.id,
     tokenManager: overrides.tokenManager,
     authMode: resolveAuthMode(resolvedApiKey, resolvedAccessToken, resolvedAuthToken, overrides.authMode),

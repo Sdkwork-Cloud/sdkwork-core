@@ -13,6 +13,7 @@ import type {
   PcReactRuntimeSession
 } from "../internal/contracts";
 import { normalizeBearerToken, resolveAuthMode } from "../internal/helpers";
+import { resolveDualTokenIdentityClaims } from "../internal/jwtClaims";
 import {
   bindImConnectionState,
   getImClientCache,
@@ -199,6 +200,7 @@ function createResolvedImClientConfig(
   );
   const resolvedApiKey = (mergedOverrides.apiKey || env.auth.apiKey || "").trim();
   const resolvedAuthToken = normalizeBearerToken(mergedOverrides.authToken || session?.authToken);
+  const identityClaims = resolveDualTokenIdentityClaims(resolvedAccessToken, resolvedAuthToken);
   const tokenManager =
     mergedOverrides.tokenManager ??
     createPcReactImTokenProvider({
@@ -215,8 +217,8 @@ function createResolvedImClientConfig(
     apiKey: resolvedApiKey || undefined,
     accessToken: resolvedAccessToken || undefined,
     authToken: resolvedAuthToken || undefined,
-    tenantId: (mergedOverrides.tenantId ?? env.owner.tenantId) || undefined,
-    organizationId: (mergedOverrides.organizationId ?? env.owner.organizationId) || undefined,
+    tenantId: mergedOverrides.tenantId ?? identityClaims.tenantId ?? undefined,
+    organizationId: mergedOverrides.organizationId ?? identityClaims.organizationId ?? undefined,
     platform: mergedOverrides.platform ?? env.platform.id,
     clientFactory: mergedOverrides.clientFactory,
     tokenManager,
@@ -299,8 +301,10 @@ export function createImRuntimeConfigFromEnv(
   const env = createPcReactEnvConfig(envSource);
   const resolvedAccessToken = normalizeBearerToken(overrides.accessToken || env.auth.accessToken);
   const resolvedApiKey = (overrides.apiKey || env.auth.apiKey || "").trim();
-  const resolvedTenantId = (overrides.tenantId ?? env.owner.tenantId) || undefined;
-  const resolvedOrganizationId = (overrides.organizationId ?? env.owner.organizationId) || undefined;
+  const resolvedAuthToken = normalizeBearerToken(overrides.authToken);
+  const identityClaims = resolveDualTokenIdentityClaims(resolvedAccessToken, resolvedAuthToken);
+  const resolvedTenantId = overrides.tenantId ?? identityClaims.tenantId ?? undefined;
+  const resolvedOrganizationId = overrides.organizationId ?? identityClaims.organizationId ?? undefined;
   const resolvedPlatform = overrides.platform ?? env.platform.id;
   const websocketBaseUrl = overrides.websocketBaseUrl || env.realtime.imWsUrl || undefined;
 

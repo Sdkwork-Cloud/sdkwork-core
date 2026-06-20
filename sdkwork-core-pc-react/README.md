@@ -115,13 +115,13 @@ Primary env keys:
 - `VITE_ORGANIZATION_ACCESS_TOKEN`
 - `VITE_IM_WS_URL`
 - `VITE_API_KEY`
-- `VITE_TENANT_ID`
-- `VITE_ORGANIZATION_ID`
 - `VITE_PLATFORM`
 - `VITE_DISTRIBUTION_ID`
 - `VITE_APP_ID`
 - `VITE_RELEASE_CHANNEL`
 - `VITE_ENABLE_STARTUP_UPDATE_CHECK`
+
+`tenant_id`, `organization_id`, and `app_id` runtime identity must come from dual-token JWT claims in the active access token or auth token. Do not configure fixed tenant, organization, or IAM bootstrap identity through env variables.
 
 Compatibility env keys that are still supported for migration:
 
@@ -132,8 +132,6 @@ Compatibility env keys that are still supported for migration:
 - `VITE_APP_PLATFORM`
 - `SDKWORK_API_BASE_URL`
 - `SDKWORK_API_KEY`
-- `SDKWORK_TENANT_ID`
-- `SDKWORK_ORGANIZATION_ID`
 - `SDKWORK_PLATFORM`
 - `SDKWORK_OWNER_MODE`
 
