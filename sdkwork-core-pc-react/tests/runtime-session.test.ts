@@ -144,7 +144,7 @@ describe("runtime session storage", () => {
 
     configurePcReactRuntime({
       envSource: {
-        VITE_ACCESS_TOKEN: "env-access"
+        SDKWORK_ACCESS_TOKEN: "env-access"
       },
       storage: createStorage({
         "sdkwork-notes-auth-session": JSON.stringify({
@@ -171,7 +171,7 @@ describe("runtime session storage", () => {
     resetPcReactRuntime();
     runtimeGlobal.__SDKWORK_NOTES_ENV__ = {
       VITE_APP_API_BASE_URL: "https://notes-env.example.com/",
-      VITE_APP_ACCESS_TOKEN: "notes-access",
+      SDKWORK_ACCESS_TOKEN: "notes-access",
       VITE_APP_PLATFORM: "desktop-notes"
     };
 

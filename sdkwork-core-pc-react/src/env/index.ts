@@ -13,6 +13,18 @@ import {
   resolveRuntimeEnv
 } from "../internal/helpers";
 import { resolveDualTokenIdentityClaims } from "../internal/jwtClaims";
+import {
+  SDKWORK_ACCESS_TOKEN_ENV_KEY,
+  assertNoForbiddenCredentialEnv,
+  resolveSdkworkAccessTokenFromEnv,
+} from "./credentialEnv";
+
+export {
+  SDKWORK_ACCESS_TOKEN_ENV_KEY,
+  assertNoForbiddenCredentialEnv,
+  listForbiddenCredentialEnvViolations,
+  resolveSdkworkAccessTokenFromEnv,
+} from "./credentialEnv";
 
 export const SDKWORK_PC_REACT_ENV_KEYS = [
   "VITE_APP_ENV",
@@ -31,18 +43,7 @@ export const SDKWORK_PC_REACT_ENV_KEYS = [
   "VITE_APP_ORGANIZATION_API_BASE_URL",
   "VITE_IM_WS_URL",
   "VITE_APP_IM_WS_URL",
-  "VITE_ACCESS_TOKEN",
-  "VITE_APP_ACCESS_TOKEN",
-  "VITE_APP_ROOT_ACCESS_TOKEN",
-  "VITE_APP_TENANT_ACCESS_TOKEN",
-  "VITE_APP_ORGANIZATION_ACCESS_TOKEN",
-  "VITE_ROOT_ACCESS_TOKEN",
-  "VITE_APP_ROOT_ACCESS_TOKEN",
-  "VITE_TENANT_ACCESS_TOKEN",
-  "VITE_APP_TENANT_ACCESS_TOKEN",
-  "VITE_ORGANIZATION_ACCESS_TOKEN",
-  "VITE_APP_ORGANIZATION_ACCESS_TOKEN",
-  "VITE_API_KEY",
+  SDKWORK_ACCESS_TOKEN_ENV_KEY,
   "VITE_TIMEOUT",
   "VITE_PLATFORM",
   "VITE_APP_PLATFORM",
@@ -146,8 +147,6 @@ function resolveOwnerMode(source: PcReactEnvSource): PcReactOwnerMode {
 
   const hasTenantSignals = Boolean(
     firstNonEmptyValue(
-      normalizeString(source.VITE_TENANT_ACCESS_TOKEN as string | undefined),
-      normalizeString(source.VITE_APP_TENANT_ACCESS_TOKEN as string | undefined),
       normalizeString(source.VITE_TENANT_API_BASE_URL as string | undefined),
       normalizeString(source.VITE_APP_TENANT_API_BASE_URL as string | undefined)
     )
@@ -158,8 +157,6 @@ function resolveOwnerMode(source: PcReactEnvSource): PcReactOwnerMode {
 
   const hasOrganizationSignals = Boolean(
     firstNonEmptyValue(
-      normalizeString(source.VITE_ORGANIZATION_ACCESS_TOKEN as string | undefined),
-      normalizeString(source.VITE_APP_ORGANIZATION_ACCESS_TOKEN as string | undefined),
       normalizeString(source.VITE_ORGANIZATION_API_BASE_URL as string | undefined),
       normalizeString(source.VITE_APP_ORGANIZATION_API_BASE_URL as string | undefined)
     )
@@ -209,36 +206,13 @@ function resolveScopedBaseUrls(source: PcReactEnvSource, runtimeEnv: PcReactEnvC
 }
 
 function resolveScopedAccessTokens(source: PcReactEnvSource): OwnerScopedValue<string> {
-  const defaultAccessToken = normalizeBearerToken(
-    firstNonEmptyValue(
-      normalizeString(source.VITE_ACCESS_TOKEN as string | undefined),
-      normalizeString(source.VITE_APP_ACCESS_TOKEN as string | undefined)
-    )
-  );
+  const deploymentAccessToken = resolveSdkworkAccessTokenFromEnv(source);
 
   return {
-    default: defaultAccessToken,
-    root: normalizeBearerToken(
-      firstNonEmptyValue(
-        normalizeString(source.VITE_ROOT_ACCESS_TOKEN as string | undefined),
-        normalizeString(source.VITE_APP_ROOT_ACCESS_TOKEN as string | undefined),
-        defaultAccessToken
-      )
-    ),
-    tenant: normalizeBearerToken(
-      firstNonEmptyValue(
-        normalizeString(source.VITE_TENANT_ACCESS_TOKEN as string | undefined),
-        normalizeString(source.VITE_APP_TENANT_ACCESS_TOKEN as string | undefined),
-        defaultAccessToken
-      )
-    ),
-    organization: normalizeBearerToken(
-      firstNonEmptyValue(
-        normalizeString(source.VITE_ORGANIZATION_ACCESS_TOKEN as string | undefined),
-        normalizeString(source.VITE_APP_ORGANIZATION_ACCESS_TOKEN as string | undefined),
-        defaultAccessToken
-      )
-    )
+    default: deploymentAccessToken,
+    root: deploymentAccessToken,
+    tenant: deploymentAccessToken,
+    organization: deploymentAccessToken,
   };
 }
 
@@ -255,6 +229,8 @@ function pickOwnerScopedValue<T>(mode: PcReactOwnerMode, values: OwnerScopedValu
 }
 
 export function createPcReactEnvConfig(source: PcReactEnvSource = readPcReactEnvSource()): PcReactEnvConfig {
+  assertNoForbiddenCredentialEnv(source);
+
   const appEnv = resolveRuntimeEnv(
     normalizeString(source.VITE_APP_ENV as string | undefined),
     normalizeString(source.MODE as string | undefined),
@@ -266,12 +242,6 @@ export function createPcReactEnvConfig(source: PcReactEnvSource = readPcReactEnv
   const baseUrl = normalizeUrl(pickOwnerScopedValue(ownerMode, baseUrls) || resolveDefaultBaseUrl(appEnv));
   const accessToken = normalizeBearerToken(pickOwnerScopedValue(ownerMode, accessTokens));
   const identityClaims = resolveDualTokenIdentityClaims(accessToken);
-  const apiKey = normalizeString(
-    firstNonEmptyValue(
-      normalizeString(source.VITE_API_KEY as string | undefined),
-      normalizeString(source.SDKWORK_API_KEY as string | undefined)
-    )
-  );
   const isTauri = detectTauriRuntime();
   const platformId = resolvePlatformId(source, isTauri);
   const imWsUrl = normalizeUrl(
@@ -317,10 +287,9 @@ export function createPcReactEnvConfig(source: PcReactEnvSource = readPcReactEnv
       )
     },
     auth: {
-      apiKey,
       accessToken,
       accessTokens,
-      mode: resolveAuthMode(apiKey, accessToken)
+      mode: resolveAuthMode(undefined, accessToken)
     },
     realtime: {
       imWsUrl

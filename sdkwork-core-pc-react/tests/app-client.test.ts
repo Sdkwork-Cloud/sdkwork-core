@@ -47,7 +47,7 @@ describe("app client runtime", () => {
       envSource: {
         VITE_OWNER_MODE: "tenant",
         VITE_TENANT_API_BASE_URL: "https://tenant.example.com/",
-        VITE_TENANT_ACCESS_TOKEN: "tenant-access"
+        SDKWORK_ACCESS_TOKEN: "tenant-access"
       }
     });
 
@@ -68,38 +68,30 @@ describe("app client runtime", () => {
     expect(client).toBe(mocks.appClient);
   });
 
-  it("switches to api-key mode when api key is configured", async () => {
-    const { configurePcReactRuntime, createAppClientConfig } = await import("../src");
+  it("switches to api-key mode when api key is configured through overrides", async () => {
+    const { createAppClientConfig } = await import("../src");
 
-    configurePcReactRuntime({
-      envSource: {
-        VITE_API_BASE_URL: "https://api.example.com",
-        VITE_API_KEY: "pc-api-key"
-      }
+    const config = createAppClientConfig({
+      baseUrl: "https://api.example.com",
+      apiKey: "pc-api-key"
     });
-
-    const config = createAppClientConfig();
 
     expect(config.baseUrl).toBe("https://api.example.com");
     expect(config.apiKey).toBe("pc-api-key");
     expect(config.authMode).toBe("apikey");
   });
 
-  it("keeps dual-token mode when api key and access token are both present", async () => {
-    const { configurePcReactRuntime, createAppClientConfig } = await import("../src");
+  it("keeps dual-token mode when api key and access token are both present through overrides", async () => {
+    const { createAppClientConfig } = await import("../src");
 
-    configurePcReactRuntime({
-      envSource: {
-        VITE_API_BASE_URL: "https://api.example.com",
-        VITE_API_KEY: "pc-api-key",
-        VITE_ACCESS_TOKEN: "env-access-token"
-      }
+    const config = createAppClientConfig({
+      baseUrl: "https://api.example.com",
+      apiKey: "pc-api-key",
+      accessToken: "override-access-token"
     });
 
-    const config = createAppClientConfig();
-
     expect(config.apiKey).toBe("pc-api-key");
-    expect(config.accessToken).toBe("env-access-token");
+    expect(config.accessToken).toBe("override-access-token");
     expect(config.authMode).toBe("dual-token");
   });
 
@@ -110,7 +102,7 @@ describe("app client runtime", () => {
       {
         VITE_APP_ENV: "production",
         VITE_APP_BASE_URL: "https://legacy-app.example.com/",
-        VITE_APP_ACCESS_TOKEN: "legacy-app-access",
+        SDKWORK_ACCESS_TOKEN: "legacy-app-access",
         VITE_APP_PLATFORM: "desktop-notes"
       },
       {
@@ -159,7 +151,7 @@ describe("app client runtime", () => {
 
     configurePcReactRuntime({
       envSource: {
-        VITE_ACCESS_TOKEN: "env-access-token"
+        SDKWORK_ACCESS_TOKEN: "env-access-token"
       }
     });
 
@@ -178,7 +170,7 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        VITE_ACCESS_TOKEN: "env-access"
+        SDKWORK_ACCESS_TOKEN: "env-access"
       }
     });
 
@@ -202,7 +194,7 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        VITE_ACCESS_TOKEN: "env-access-token"
+        SDKWORK_ACCESS_TOKEN: "env-access-token"
       }
     });
 
@@ -279,12 +271,13 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        VITE_AUTH_TOKEN: "auth-token",
-        VITE_ACCESS_TOKEN: "access-token"
+        SDKWORK_ACCESS_TOKEN: "access-token"
       }
     });
 
-    const config = createAppClientConfig();
+    const config = createAppClientConfig({
+      authToken: "auth-token"
+    });
 
     expect(config.headers).toMatchObject({
       "Access-Token": "access-token"

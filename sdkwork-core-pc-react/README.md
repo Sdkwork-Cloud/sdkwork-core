@@ -101,7 +101,7 @@ desktop foundation without pulling messaging or audio/video dependencies into th
 
 ## Env standard
 
-Primary env keys:
+Primary public/runtime env keys:
 
 - `VITE_APP_ENV`
 - `VITE_OWNER_MODE`
@@ -109,31 +109,31 @@ Primary env keys:
 - `VITE_ROOT_API_BASE_URL`
 - `VITE_TENANT_API_BASE_URL`
 - `VITE_ORGANIZATION_API_BASE_URL`
-- `VITE_ACCESS_TOKEN`
-- `VITE_ROOT_ACCESS_TOKEN`
-- `VITE_TENANT_ACCESS_TOKEN`
-- `VITE_ORGANIZATION_ACCESS_TOKEN`
 - `VITE_IM_WS_URL`
-- `VITE_API_KEY`
 - `VITE_PLATFORM`
 - `VITE_DISTRIBUTION_ID`
 - `VITE_APP_ID`
 - `VITE_RELEASE_CHANNEL`
 - `VITE_ENABLE_STARTUP_UPDATE_CHECK`
 
-`tenant_id`, `organization_id`, and `app_id` runtime identity must come from dual-token JWT claims in the active access token or auth token. Do not configure fixed tenant, organization, or IAM bootstrap identity through env variables.
+Private deployment credential env (never `VITE_*`):
+
+- `SDKWORK_ACCESS_TOKEN`
+
+`tenant_id`, `organization_id`, and `app_id` runtime identity must come from dual-token JWT claims in the active access token or auth token. Do not configure fixed tenant, organization, IAM bootstrap identity, `auth_token`, `refresh_token`, or API keys through environment variables.
 
 Compatibility env keys that are still supported for migration:
 
 - `VITE_APP_API_BASE_URL`
 - `VITE_APP_BASE_URL`
 - `VITE_APP_IM_WS_URL`
-- `VITE_APP_ACCESS_TOKEN`
 - `VITE_APP_PLATFORM`
 - `SDKWORK_API_BASE_URL`
-- `SDKWORK_API_KEY`
 - `SDKWORK_PLATFORM`
 - `SDKWORK_OWNER_MODE`
+- `SDKWORK_TIMEOUT`
+
+Vite apps must inject `SDKWORK_ACCESS_TOKEN` through `vite.config.ts` `define` as `process.env.SDKWORK_ACCESS_TOKEN`. Use `@sdkwork/core-pc-react/vite` helpers `buildSdkworkVitePrivateEnvDefine()` and `stripForbiddenCredentialEnvEntries()`.
 
 Injected desktop env compatibility:
 

@@ -34,13 +34,13 @@ const mocks = vi.hoisted(() => {
 
 const ORIGINAL_ENV = {
   VITE_API_BASE_URL: process.env.VITE_API_BASE_URL,
-  VITE_ACCESS_TOKEN: process.env.VITE_ACCESS_TOKEN
+  SDKWORK_ACCESS_TOKEN: process.env.SDKWORK_ACCESS_TOKEN
 };
 
 describe("im client runtime", () => {
   beforeEach(async () => {
     process.env.VITE_API_BASE_URL = "https://api.example.com/";
-    process.env.VITE_ACCESS_TOKEN = "runtime-access-token";
+    process.env.SDKWORK_ACCESS_TOKEN = "runtime-access-token";
 
     mocks.connectMock.mockClear();
     mocks.disconnectMock.mockClear();
@@ -59,7 +59,7 @@ describe("im client runtime", () => {
 
   afterAll(() => {
     process.env.VITE_API_BASE_URL = ORIGINAL_ENV.VITE_API_BASE_URL;
-    process.env.VITE_ACCESS_TOKEN = ORIGINAL_ENV.VITE_ACCESS_TOKEN;
+    process.env.SDKWORK_ACCESS_TOKEN = ORIGINAL_ENV.SDKWORK_ACCESS_TOKEN;
   });
 
   it("syncs separated transport tokens and login session into the IM runtime", async () => {
@@ -127,7 +127,7 @@ describe("im client runtime", () => {
       {
         VITE_APP_ENV: "development",
         VITE_APP_API_BASE_URL: "https://im-app.example.com/",
-        VITE_APP_ACCESS_TOKEN: "im-access-token",
+        SDKWORK_ACCESS_TOKEN: "im-access-token",
         VITE_APP_PLATFORM: "desktop-chat"
       },
       {
@@ -219,12 +219,13 @@ describe("im client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com/",
-        VITE_AUTH_TOKEN: "auth-token",
-        VITE_ACCESS_TOKEN: "access-token"
+        SDKWORK_ACCESS_TOKEN: "access-token"
       }
     });
 
-    const config = createImClientConfig();
+    const config = createImClientConfig({
+      authToken: "auth-token"
+    });
 
     expect(config.headers).toMatchObject({
       "Access-Token": "access-token"
@@ -242,7 +243,7 @@ describe("im client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com/",
-        VITE_ACCESS_TOKEN: "runtime-access-token"
+        SDKWORK_ACCESS_TOKEN: "runtime-access-token"
       }
     });
 

@@ -29,7 +29,7 @@ describe("core hooks", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        VITE_ACCESS_TOKEN: "tenant-access-token"
+        SDKWORK_ACCESS_TOKEN: "tenant-access-token"
       },
       appClientFactory: mocks.createAppClientMock,
       imConfigOverrides: {

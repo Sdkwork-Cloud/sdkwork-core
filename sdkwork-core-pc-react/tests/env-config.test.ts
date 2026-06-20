@@ -13,16 +13,14 @@ afterEach(() => {
 });
 
 describe("createPcReactEnvConfig", () => {
-  it("resolves owner-scoped tenant base url and access token", () => {
+  it("resolves owner-scoped tenant base url from unified deployment access token", () => {
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "development",
       VITE_OWNER_MODE: "tenant",
       VITE_API_BASE_URL: "https://default.example.com/",
       VITE_TENANT_API_BASE_URL: "https://tenant.example.com///",
       VITE_ROOT_API_BASE_URL: "https://root.example.com",
-      VITE_ACCESS_TOKEN: "default-access",
-      VITE_TENANT_ACCESS_TOKEN: "tenant-access",
-      VITE_ROOT_ACCESS_TOKEN: "root-access",
+      SDKWORK_ACCESS_TOKEN: "tenant-access",
       VITE_IM_WS_URL: "wss://tenant-im.example.com/ws/",
       VITE_TIMEOUT: "45000",
       VITE_PLATFORM: "desktop"
@@ -37,7 +35,7 @@ describe("createPcReactEnvConfig", () => {
     expect(env.platform.id).toBe("desktop");
   });
 
-  it("derives tenant and organization identity from dual-token access token claims", () => {
+  it("derives tenant and organization identity from deployment access token claims", () => {
     const accessToken = createTestAccessToken({
       tenant_id: "tenant-from-token",
       organization_id: "org-from-token",
@@ -45,7 +43,7 @@ describe("createPcReactEnvConfig", () => {
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "test",
       VITE_API_BASE_URL: "https://primary.example.com/",
-      VITE_ACCESS_TOKEN: accessToken,
+      SDKWORK_ACCESS_TOKEN: accessToken,
       VITE_TENANT_ID: "tenant-env-ignored",
       SDKWORK_TENANT_ID: "tenant-legacy-ignored",
       VITE_ORGANIZATION_ID: "org-env-ignored",
@@ -59,11 +57,11 @@ describe("createPcReactEnvConfig", () => {
     expect(env.owner.organizationId).toBe("org-from-token");
   });
 
-  it("supports legacy desktop vite compatibility keys for base url, access token, and platform", () => {
+  it("supports legacy desktop vite compatibility keys for base url and platform", () => {
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "production",
       VITE_APP_BASE_URL: "https://legacy-app.example.com/",
-      VITE_APP_ACCESS_TOKEN: "legacy-app-access",
+      SDKWORK_ACCESS_TOKEN: "legacy-app-access",
       VITE_APP_PLATFORM: "desktop-notes"
     });
 
@@ -83,8 +81,7 @@ describe("createPcReactEnvConfig", () => {
       VITE_APP_OWNER_MODE: "organization",
       VITE_API_BASE_URL: "https://root.example.com/",
       VITE_APP_ORGANIZATION_API_BASE_URL: "https://org.example.com///",
-      VITE_ACCESS_TOKEN: "root-access",
-      VITE_APP_ORGANIZATION_ACCESS_TOKEN: orgAccessToken,
+      SDKWORK_ACCESS_TOKEN: orgAccessToken,
     } as Record<string, string>);
 
     expect(env.owner.mode).toBe("organization");
@@ -92,6 +89,15 @@ describe("createPcReactEnvConfig", () => {
     expect(env.auth.accessToken).toBe(orgAccessToken);
     expect(env.owner.organizationId).toBe("org-1001");
     expect(env.owner.tenantId).toBe("tenant-1001");
+  });
+
+  it("rejects browser and session credential env variables", () => {
+    expect(() =>
+      createPcReactEnvConfig({
+        VITE_APP_ENV: "development",
+        VITE_ACCESS_TOKEN: "browser-access",
+      }),
+    ).toThrow(/Forbidden credential environment variables: VITE_ACCESS_TOKEN/);
   });
 
   it("detects desktop mode when the Tauri runtime is exposed through __TAURI__", () => {

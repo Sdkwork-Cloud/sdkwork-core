@@ -28,7 +28,7 @@ describe("shell bridge hook", () => {
     resetPcReactRuntime();
     configurePcReactRuntime({
       envSource: {
-        VITE_ACCESS_TOKEN: "tenant-access-token",
+        SDKWORK_ACCESS_TOKEN: "tenant-access-token",
         VITE_API_BASE_URL: "https://api.example.com",
       },
       preferences: {

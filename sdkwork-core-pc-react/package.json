@@ -47,6 +47,11 @@
       "types": "./src/runtime/index.ts",
       "import": "./src/runtime/index.ts",
       "default": "./src/runtime/index.ts"
+    },
+    "./vite": {
+      "types": "./src/vite/privateEnv.ts",
+      "import": "./src/vite/privateEnv.ts",
+      "default": "./src/vite/privateEnv.ts"
     }
   },
   "scripts": {
