@@ -303,8 +303,8 @@ export function createPcReactEnvConfig(source: PcReactEnvSource = readPcReactEnv
     },
     owner: {
       mode: ownerMode,
-      tenantId,
-      organizationId
+      tenantId: identityClaims.tenantId ?? "",
+      organizationId: identityClaims.organizationId ?? "",
     },
     api: {
       baseUrl,
