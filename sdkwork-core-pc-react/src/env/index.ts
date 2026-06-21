@@ -287,6 +287,7 @@ export function createPcReactEnvConfig(source: PcReactEnvSource = readPcReactEnv
       )
     },
     auth: {
+      apiKey: "",
       accessToken,
       accessTokens,
       mode: resolveAuthMode(undefined, accessToken)
