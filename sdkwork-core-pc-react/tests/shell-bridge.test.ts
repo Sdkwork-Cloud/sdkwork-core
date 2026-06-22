@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { TEST_DEPLOYMENT_ACCESS_TOKEN } from "./helpers/testEnvTokens";
+
 describe("pc react shell bridge runtime helpers", () => {
   beforeEach(async () => {
     const { configurePcReactRuntime, resetPcReactRuntime } = await import("../src");
     resetPcReactRuntime();
     configurePcReactRuntime({
       envSource: {
-        SDKWORK_ACCESS_TOKEN: "tenant-access-token",
+        SDKWORK_ACCESS_TOKEN: TEST_DEPLOYMENT_ACCESS_TOKEN,
         VITE_API_BASE_URL: "https://api.example.com",
       },
       preferences: {

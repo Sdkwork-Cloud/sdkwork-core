@@ -1,4 +1,5 @@
 import type { ConfigurePcReactRuntimeOptions, PcReactRuntimeSession } from "../internal/contracts";
+import { normalizeBearerToken } from "../internal/helpers";
 import { applyRuntimeSessionToAppClient } from "../app/index";
 import {
   clearStoredPcReactRuntimeSession,
@@ -34,6 +35,16 @@ export function readRuntimeSession(): PcReactRuntimeSession {
 }
 
 export const readPcReactRuntimeSession = readRuntimeSession;
+
+export function hasPcReactAuthenticatedSession(
+  session?: Pick<PcReactRuntimeSession, "accessToken" | "authToken"> | null,
+): boolean {
+  const resolvedSession = session ?? readStoredPcReactRuntimeSession();
+  return Boolean(
+    normalizeBearerToken(resolvedSession.authToken)
+    && normalizeBearerToken(resolvedSession.accessToken),
+  );
+}
 
 export function clearPcReactRuntimeSession(): void {
   clearStoredPcReactRuntimeSession();

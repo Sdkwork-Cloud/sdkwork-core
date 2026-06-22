@@ -1,4 +1,5 @@
 import { normalizeBearerToken, normalizeString } from "../internal/helpers";
+import { assertSdkworkJwtCredential } from "../internal/jwtClaims";
 
 export const SDKWORK_ACCESS_TOKEN_ENV_KEY = "SDKWORK_ACCESS_TOKEN";
 
@@ -88,7 +89,11 @@ export function assertNoForbiddenCredentialEnv(source: Record<string, unknown>):
 }
 
 export function resolveSdkworkAccessTokenFromEnv(source: Record<string, unknown>): string {
-  return normalizeBearerToken(
+  const accessToken = normalizeBearerToken(
     normalizeString(source[SDKWORK_ACCESS_TOKEN_ENV_KEY] as string | undefined),
   );
+  if (accessToken) {
+    assertSdkworkJwtCredential(accessToken, "SDKWORK_ACCESS_TOKEN");
+  }
+  return accessToken;
 }

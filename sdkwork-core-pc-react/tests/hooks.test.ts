@@ -1,6 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { TEST_DEPLOYMENT_ACCESS_TOKEN } from "./helpers/testEnvTokens";
+
 const mocks = vi.hoisted(() => {
   const appClient = {
     setAuthToken: vi.fn(),
@@ -29,7 +31,7 @@ describe("core hooks", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        SDKWORK_ACCESS_TOKEN: "tenant-access-token"
+        SDKWORK_ACCESS_TOKEN: TEST_DEPLOYMENT_ACCESS_TOKEN
       },
       appClientFactory: mocks.createAppClientMock,
       imConfigOverrides: {

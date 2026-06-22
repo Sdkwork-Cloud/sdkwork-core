@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
 
+import {
+  TEST_DEPLOYMENT_ACCESS_TOKEN,
+  testDeploymentAccessToken,
+} from "./helpers/testEnvTokens";
+
+const ENV_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "env" });
+const NOTES_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "notes" });
+
 const AUTH_TOKEN_STORAGE_KEY = "sdkwork.core.pc-react.auth-token";
 const ACCESS_TOKEN_STORAGE_KEY = "core.pc-react.access-token";
 const IM_SESSION_STORAGE_KEY = "sdkwork.core.pc-react.im-session";
@@ -144,7 +152,7 @@ describe("runtime session storage", () => {
 
     configurePcReactRuntime({
       envSource: {
-        SDKWORK_ACCESS_TOKEN: "env-access"
+        SDKWORK_ACCESS_TOKEN: ENV_ACCESS_TOKEN
       },
       storage: createStorage({
         "sdkwork-notes-auth-session": JSON.stringify({
@@ -156,10 +164,21 @@ describe("runtime session storage", () => {
 
     expect(readPcReactRuntimeSession()).toEqual({
       authToken: "legacy-json-auth",
-      accessToken: "env-access",
+      accessToken: ENV_ACCESS_TOKEN,
       refreshToken: "legacy-json-refresh",
       im: undefined
     });
+  });
+
+  it("requires dual runtime session tokens for authenticated session checks", async () => {
+    const { hasPcReactAuthenticatedSession, resetPcReactRuntime } = await import("../src");
+
+    resetPcReactRuntime();
+
+    expect(hasPcReactAuthenticatedSession({ authToken: "auth", accessToken: "access" })).toBe(true);
+    expect(hasPcReactAuthenticatedSession({ authToken: "auth" })).toBe(false);
+    expect(hasPcReactAuthenticatedSession({ accessToken: "access" })).toBe(false);
+    expect(hasPcReactAuthenticatedSession(null)).toBe(false);
   });
 
   it("resolves injected global env sources before falling back to import meta env", async () => {
@@ -171,7 +190,7 @@ describe("runtime session storage", () => {
     resetPcReactRuntime();
     runtimeGlobal.__SDKWORK_NOTES_ENV__ = {
       VITE_APP_API_BASE_URL: "https://notes-env.example.com/",
-      SDKWORK_ACCESS_TOKEN: "notes-access",
+      SDKWORK_ACCESS_TOKEN: NOTES_ACCESS_TOKEN,
       VITE_APP_PLATFORM: "desktop-notes"
     };
 
@@ -180,7 +199,7 @@ describe("runtime session storage", () => {
     });
 
     expect(getPcReactEnv().api.baseUrl).toBe("https://notes-env.example.com");
-    expect(getPcReactEnv().auth.accessToken).toBe("notes-access");
+    expect(getPcReactEnv().auth.accessToken).toBe(NOTES_ACCESS_TOKEN);
     expect(getPcReactEnv().platform.id).toBe("desktop-notes");
 
     delete runtimeGlobal.__SDKWORK_NOTES_ENV__;

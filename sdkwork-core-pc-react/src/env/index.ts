@@ -25,6 +25,11 @@ export {
   listForbiddenCredentialEnvViolations,
   resolveSdkworkAccessTokenFromEnv,
 } from "./credentialEnv";
+export {
+  assertSdkworkJwtCredential,
+  createTestJwt,
+  isSdkworkJwtCompactSerialization,
+} from "../internal/jwtClaims";
 
 export const SDKWORK_PC_REACT_ENV_KEYS = [
   "VITE_APP_ENV",

@@ -1,10 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { createPcReactEnvConfig } from "../src/env";
+import { createPcReactEnvConfig, createTestJwt } from "../src/env";
 
 function createTestAccessToken(claims: Record<string, unknown>): string {
-  const body = btoa(JSON.stringify(claims)).replace(/=+$/g, "");
-  return `header.${body}.signature`;
+  return createTestJwt(claims);
 }
 
 afterEach(() => {
@@ -14,13 +13,19 @@ afterEach(() => {
 
 describe("createPcReactEnvConfig", () => {
   it("resolves owner-scoped tenant base url from unified deployment access token", () => {
+    const deploymentAccessToken = createTestAccessToken({
+      tenant_id: "tenant-access",
+      app_id: "appbase",
+      environment: "development",
+      deployment_mode: "saas",
+    });
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "development",
       VITE_OWNER_MODE: "tenant",
       VITE_API_BASE_URL: "https://default.example.com/",
       VITE_TENANT_API_BASE_URL: "https://tenant.example.com///",
       VITE_ROOT_API_BASE_URL: "https://root.example.com",
-      SDKWORK_ACCESS_TOKEN: "tenant-access",
+      SDKWORK_ACCESS_TOKEN: deploymentAccessToken,
       VITE_IM_WS_URL: "wss://tenant-im.example.com/ws/",
       VITE_TIMEOUT: "45000",
       VITE_PLATFORM: "desktop"
@@ -29,7 +34,7 @@ describe("createPcReactEnvConfig", () => {
     expect(env.appEnv).toBe("development");
     expect(env.owner.mode).toBe("tenant");
     expect(env.api.baseUrl).toBe("https://tenant.example.com");
-    expect(env.auth.accessToken).toBe("tenant-access");
+    expect(env.auth.accessToken).toBe(deploymentAccessToken);
     expect(env.realtime.imWsUrl).toBe("wss://tenant-im.example.com/ws");
     expect(env.api.timeout).toBe(45000);
     expect(env.platform.id).toBe("desktop");
@@ -58,16 +63,22 @@ describe("createPcReactEnvConfig", () => {
   });
 
   it("supports legacy desktop vite compatibility keys for base url and platform", () => {
+    const legacyAccessToken = createTestAccessToken({
+      tenant_id: "legacy",
+      app_id: "legacy-app",
+      environment: "production",
+      deployment_mode: "saas",
+    });
     const env = createPcReactEnvConfig({
       VITE_APP_ENV: "production",
       VITE_APP_BASE_URL: "https://legacy-app.example.com/",
-      SDKWORK_ACCESS_TOKEN: "legacy-app-access",
+      SDKWORK_ACCESS_TOKEN: legacyAccessToken,
       VITE_APP_PLATFORM: "desktop-notes"
     });
 
     expect(env.appEnv).toBe("production");
     expect(env.api.baseUrl).toBe("https://legacy-app.example.com");
-    expect(env.auth.accessToken).toBe("legacy-app-access");
+    expect(env.auth.accessToken).toBe(legacyAccessToken);
     expect(env.platform.id).toBe("desktop-notes");
   });
 

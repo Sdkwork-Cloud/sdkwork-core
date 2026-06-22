@@ -1,5 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import {
+  TEST_DEPLOYMENT_ACCESS_TOKEN,
+  testDeploymentAccessToken,
+} from "./helpers/testEnvTokens";
+
+const LEGACY_APP_ACCESS = testDeploymentAccessToken({ marker: "legacy-app" });
+const ENV_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "env" });
+const RUNTIME_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "runtime" });
+const OVERRIDE_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "override" });
+const SCOPED_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "scoped" });
+const SESSION_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "session" });
+const HEADER_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "header" });
+
 const mocks = vi.hoisted(() => {
   const appClient = {
     analytic: { kind: "analytic" },
@@ -47,7 +60,7 @@ describe("app client runtime", () => {
       envSource: {
         VITE_OWNER_MODE: "tenant",
         VITE_TENANT_API_BASE_URL: "https://tenant.example.com/",
-        SDKWORK_ACCESS_TOKEN: "tenant-access"
+        SDKWORK_ACCESS_TOKEN: TEST_DEPLOYMENT_ACCESS_TOKEN
       }
     });
 
@@ -60,11 +73,11 @@ describe("app client runtime", () => {
     const client = getAppClientWithSession();
 
     expect(config.baseUrl).toBe("https://tenant.example.com");
-    expect(config.accessToken).toBe("tenant-access");
+    expect(config.accessToken).toBe(TEST_DEPLOYMENT_ACCESS_TOKEN);
     expect(config.authMode).toBe("dual-token");
     expect(mocks.createClientMock).toHaveBeenCalledTimes(1);
     expect(mocks.appClient.setAuthToken).toHaveBeenLastCalledWith("auth-token");
-    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith("tenant-access");
+    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith(TEST_DEPLOYMENT_ACCESS_TOKEN);
     expect(client).toBe(mocks.appClient);
   });
 
@@ -87,11 +100,11 @@ describe("app client runtime", () => {
     const config = createAppClientConfig({
       baseUrl: "https://api.example.com",
       apiKey: "pc-api-key",
-      accessToken: "override-access-token"
+      accessToken: OVERRIDE_ACCESS_TOKEN
     });
 
     expect(config.apiKey).toBe("pc-api-key");
-    expect(config.accessToken).toBe("override-access-token");
+    expect(config.accessToken).toBe(OVERRIDE_ACCESS_TOKEN);
     expect(config.authMode).toBe("dual-token");
   });
 
@@ -102,7 +115,7 @@ describe("app client runtime", () => {
       {
         VITE_APP_ENV: "production",
         VITE_APP_BASE_URL: "https://legacy-app.example.com/",
-        SDKWORK_ACCESS_TOKEN: "legacy-app-access",
+        SDKWORK_ACCESS_TOKEN: LEGACY_APP_ACCESS,
         VITE_APP_PLATFORM: "desktop-notes"
       },
       {
@@ -113,7 +126,7 @@ describe("app client runtime", () => {
     expect(config).toMatchObject({
       env: "production",
       baseUrl: "https://legacy-app.example.com",
-      accessToken: "legacy-app-access",
+      accessToken: LEGACY_APP_ACCESS,
       platform: "desktop-notes",
       timeout: 12_000
     });
@@ -124,14 +137,14 @@ describe("app client runtime", () => {
 
     const client = initAppClient({
       baseUrl: "https://override.example.com",
-      accessToken: "override-access-token",
+      accessToken: OVERRIDE_ACCESS_TOKEN,
       tenantId: "tenant-1"
     });
 
     expect(client).toBe(mocks.appClient);
     expect(getAppClientConfig()).toMatchObject({
       baseUrl: "https://override.example.com",
-      accessToken: "override-access-token",
+      accessToken: OVERRIDE_ACCESS_TOKEN,
       tenantId: "tenant-1"
     });
   });
@@ -151,17 +164,17 @@ describe("app client runtime", () => {
 
     configurePcReactRuntime({
       envSource: {
-        SDKWORK_ACCESS_TOKEN: "env-access-token"
+        SDKWORK_ACCESS_TOKEN: ENV_ACCESS_TOKEN
       }
     });
 
-    expect(resolveAppClientAccessToken()).toBe("env-access-token");
+    expect(resolveAppClientAccessToken()).toBe(ENV_ACCESS_TOKEN);
 
     persistPcReactRuntimeSession({
-      accessToken: "runtime-access-token"
+      accessToken: RUNTIME_ACCESS_TOKEN
     });
 
-    expect(resolveAppClientAccessToken()).toBe("runtime-access-token");
+    expect(resolveAppClientAccessToken()).toBe(RUNTIME_ACCESS_TOKEN);
   });
 
   it("honors scoped token overrides instead of silently falling back to the global session", async () => {
@@ -170,17 +183,17 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        SDKWORK_ACCESS_TOKEN: "env-access"
+        SDKWORK_ACCESS_TOKEN: TEST_DEPLOYMENT_ACCESS_TOKEN
       }
     });
 
     createScopedAppClient({
       authToken: "Bearer scoped-auth",
-      accessToken: "scoped-access"
+      accessToken: SCOPED_ACCESS_TOKEN
     });
 
     expect(mocks.appClient.setAuthToken).toHaveBeenLastCalledWith("scoped-auth");
-    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith("scoped-access");
+    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith(SCOPED_ACCESS_TOKEN);
   });
 
   it("restores the env access token after clearing a runtime login session", async () => {
@@ -194,20 +207,20 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        SDKWORK_ACCESS_TOKEN: "env-access-token"
+        SDKWORK_ACCESS_TOKEN: ENV_ACCESS_TOKEN
       }
     });
 
     persistPcReactRuntimeSession({
       authToken: "Bearer auth-token",
-      accessToken: "session-access-token"
+      accessToken: SESSION_ACCESS_TOKEN
     });
 
     getAppClientWithSession();
     await clearPcReactRuntimeSession();
 
     expect(mocks.appClient.setAuthToken).toHaveBeenLastCalledWith("");
-    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith("env-access-token");
+    expect(mocks.appClient.setAccessToken).toHaveBeenLastCalledWith(ENV_ACCESS_TOKEN);
   });
 
   it("decorates the app client with configured compatibility aliases", async () => {
@@ -271,7 +284,7 @@ describe("app client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com",
-        SDKWORK_ACCESS_TOKEN: "access-token"
+        SDKWORK_ACCESS_TOKEN: HEADER_ACCESS_TOKEN
       }
     });
 
@@ -280,7 +293,7 @@ describe("app client runtime", () => {
     });
 
     expect(config.headers).toMatchObject({
-      "Access-Token": "access-token"
+      "Access-Token": HEADER_ACCESS_TOKEN
     });
     expect(Object.keys(config.headers ?? {}).filter((name) => name.toLowerCase().endsWith("access-token"))).toEqual([
       "Access-Token"

@@ -1,5 +1,15 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import {
+  TEST_DEPLOYMENT_ACCESS_TOKEN,
+  testDeploymentAccessToken,
+} from "./helpers/testEnvTokens";
+
+const RUNTIME_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "runtime" });
+const IM_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "im" });
+const TENANT_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "tenant" });
+const HEADER_ACCESS_TOKEN = testDeploymentAccessToken({ marker: "header" });
+
 const mocks = vi.hoisted(() => {
   const disconnectMock = vi.fn();
   const connectMock = vi.fn(async (options?: Record<string, unknown>) => ({
@@ -40,7 +50,7 @@ const ORIGINAL_ENV = {
 describe("im client runtime", () => {
   beforeEach(async () => {
     process.env.VITE_API_BASE_URL = "https://api.example.com/";
-    process.env.SDKWORK_ACCESS_TOKEN = "runtime-access-token";
+    process.env.SDKWORK_ACCESS_TOKEN = RUNTIME_ACCESS_TOKEN;
 
     mocks.connectMock.mockClear();
     mocks.disconnectMock.mockClear();
@@ -72,7 +82,7 @@ describe("im client runtime", () => {
         username: "neo",
         displayName: "Neo",
         authToken: "Bearer auth-token",
-        accessToken: "tenant-access-token"
+        accessToken: TENANT_ACCESS_TOKEN
       },
       {
         realtimeSession: {
@@ -90,7 +100,7 @@ describe("im client runtime", () => {
         websocketBaseUrl: "wss://api.example.com/ws"
       })
     );
-    expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string; getAuthToken: () => string } }).tokenManager.getAccessToken()).toBe("tenant-access-token");
+    expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string; getAuthToken: () => string } }).tokenManager.getAccessToken()).toBe(TENANT_ACCESS_TOKEN);
     expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string; getAuthToken: () => string } }).tokenManager.getAuthToken()).toBe("auth-token");
     expect(mocks.connectMock).toHaveBeenCalledWith({
       deviceId: "device-1",
@@ -104,18 +114,18 @@ describe("im client runtime", () => {
       username: "neo",
       displayName: "Neo",
       authToken: "auth-token",
-      accessToken: "tenant-access-token"
+      accessToken: TENANT_ACCESS_TOKEN
     });
     expect(readPcReactRuntimeSession()).toEqual({
       authToken: "auth-token",
-      accessToken: "tenant-access-token",
+      accessToken: TENANT_ACCESS_TOKEN,
       refreshToken: undefined,
       im: {
         userId: "user-1",
         username: "neo",
         displayName: "Neo",
         authToken: "auth-token",
-        accessToken: "tenant-access-token"
+        accessToken: TENANT_ACCESS_TOKEN
       }
     });
   });
@@ -127,7 +137,7 @@ describe("im client runtime", () => {
       {
         VITE_APP_ENV: "development",
         VITE_APP_API_BASE_URL: "https://im-app.example.com/",
-        SDKWORK_ACCESS_TOKEN: "im-access-token",
+        SDKWORK_ACCESS_TOKEN: IM_ACCESS_TOKEN,
         VITE_APP_PLATFORM: "desktop-chat"
       },
       {
@@ -138,7 +148,8 @@ describe("im client runtime", () => {
     expect(config).toEqual({
       baseUrl: "https://im-app.example.com",
       timeout: 18_000,
-      accessToken: "im-access-token",
+      accessToken: IM_ACCESS_TOKEN,
+      tenantId: "tenant-access",
       platform: "desktop-chat",
       websocketBaseUrl: "wss://im-app.example.com/ws"
     });
@@ -154,7 +165,7 @@ describe("im client runtime", () => {
         username: "neo",
         displayName: "Neo",
         authToken: "Bearer auth-token",
-        accessToken: "tenant-access-token"
+        accessToken: TENANT_ACCESS_TOKEN
       },
       {
         bootstrapRealtime: false
@@ -164,7 +175,7 @@ describe("im client runtime", () => {
     clearPcReactRuntimeSession();
     await clearImClientSession();
 
-    expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string | undefined; getAuthToken: () => string | undefined } }).tokenManager.getAccessToken()).toBe("runtime-access-token");
+    expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string | undefined; getAuthToken: () => string | undefined } }).tokenManager.getAccessToken()).toBe(RUNTIME_ACCESS_TOKEN);
     expect((mocks.sdkInstances[0].options as { tokenManager: { getAccessToken: () => string | undefined; getAuthToken: () => string | undefined } }).tokenManager.getAuthToken()).toBeUndefined();
   });
 
@@ -207,7 +218,7 @@ describe("im client runtime", () => {
 
     expect(config.headers).toMatchObject({
       "Accept-Language": "zh-CN",
-      "Access-Token": "runtime-access-token",
+      "Access-Token": RUNTIME_ACCESS_TOKEN,
       "X-Im-Trace": "trace-1"
     });
   });
@@ -219,7 +230,7 @@ describe("im client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com/",
-        SDKWORK_ACCESS_TOKEN: "access-token"
+        SDKWORK_ACCESS_TOKEN: HEADER_ACCESS_TOKEN
       }
     });
 
@@ -228,7 +239,7 @@ describe("im client runtime", () => {
     });
 
     expect(config.headers).toMatchObject({
-      "Access-Token": "access-token"
+      "Access-Token": HEADER_ACCESS_TOKEN
     });
     expect(Object.keys(config.headers ?? {}).filter((name) => name.toLowerCase().endsWith("access-token"))).toEqual([
       "Access-Token"
@@ -243,7 +254,7 @@ describe("im client runtime", () => {
     configurePcReactRuntime({
       envSource: {
         VITE_API_BASE_URL: "https://api.example.com/",
-        SDKWORK_ACCESS_TOKEN: "runtime-access-token"
+        SDKWORK_ACCESS_TOKEN: RUNTIME_ACCESS_TOKEN
       }
     });
 
