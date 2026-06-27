@@ -138,14 +138,14 @@ describe("app client runtime", () => {
     const client = initAppClient({
       baseUrl: "https://override.example.com",
       accessToken: OVERRIDE_ACCESS_TOKEN,
-      tenantId: "tenant-1"
+      tenantId: "100001"
     });
 
     expect(client).toBe(mocks.appClient);
     expect(getAppClientConfig()).toMatchObject({
       baseUrl: "https://override.example.com",
       accessToken: OVERRIDE_ACCESS_TOKEN,
-      tenantId: "tenant-1"
+      tenantId: "100001"
     });
   });
 
