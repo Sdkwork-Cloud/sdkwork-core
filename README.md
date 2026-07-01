@@ -1,4 +1,5 @@
 # SDKWork Core
+repository-kind: foundation-dependency
 
 `apps/sdkwork-core` is the shared framework workspace for reusable SDKWork client runtimes.
 
